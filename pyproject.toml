@@ -5,9 +5,23 @@ description = "Manage and deploy Android machines with pre-defined behaviors for
 authors = ["Angelo Delicato <angelo.delicato@secsi.io>"]
 license = "GPL-3.0"
 readme = "README.md"
+packages = [
+    {include = "robodroid"}
+]
 
 [tool.poetry.dependencies]
 python = "^3.9"
+
+[tool.poetry.group.dev.dependencies]
+pre-commit = "^3.2.1"
+pylint = "^2.17.1"
+mypy = "^1.1.1"
+black = "^23.3.0"
+autopep8 = "^2.0.2"
+
+[tool.black]
+line-length = 100
+include = 'robodroid/.*\.pyi?'
 
 
 [build-system]
