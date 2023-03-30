@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "robodroid"
+version = "0.0.0"
+description = "Manage and deploy Android machines with pre-defined behaviors for Cyber Range environments"
+authors = ["Angelo Delicato <angelo.delicato@secsi.io>"]
+license = "GPL-3.0"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+robodroid = 'robodroid.main:main'
