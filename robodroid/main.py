@@ -18,15 +18,13 @@ def run(
     """
     Manage and deploy Android machines with pre-defined behaviors for Cyber Range environments
     """
-    helper.banner(__version__)
-    print(silent)
-    print(debug)
     if silent:
         logger.bold("Silent mode on. From now on only errors will be printed.")
     logger.init(silent, debug)
     if debug:
         logger.debug("Debug mode on")
     logger.log("Hello Robots!")
+    print(helper.get_library())
 
 
 def main() -> None:
