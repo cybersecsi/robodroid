@@ -11,6 +11,9 @@ packages = [
 
 [tool.poetry.dependencies]
 python = "^3.9"
+typer = {extras = ["all"], version = "^0.7.0"}
+questionary = "^1.10.0"
+typing-extensions = "^4.5.0"
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.2.1"
