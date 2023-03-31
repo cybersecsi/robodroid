@@ -23,8 +23,9 @@ def run(
     logger.init(silent, debug)
     if debug:
         logger.debug("Debug mode on")
+
+    # Just printing out an hello msg during development
     logger.log("Hello Robots!")
-    print(helper.get_library())
 
 
 def main() -> None:

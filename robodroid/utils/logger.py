@@ -28,7 +28,7 @@ class Logger:
         self.debug_mode = debug_mode
 
     def log(self, msg: str, end: str | None = None) -> None:
-        if not self.silent_mode and self.debug_mode:
+        if not self.silent_mode:
             print(msg, flush=True, end=end)
 
     def bold(self, msg: str, end: str | None = None) -> None:
@@ -39,14 +39,14 @@ class Logger:
         if not self.silent_mode:
             now = datetime.now()
             current_time = now.strftime("%H:%M:%S")
-            print(f"[{current_time}] - [INFO] - {msg}", flush=True, end=end)
+            print(f"[{current_time}] - [INF] - {msg}", flush=True, end=end)
 
     def success(self, msg: str, end: str | None = None) -> None:
         if not self.silent_mode:
             now = datetime.now()
             current_time = now.strftime("%H:%M:%S")
             print(
-                f"{SUCCESS_COLOR}[{current_time}] - [SUCC] - {msg}{END_FORMAT}",
+                f"{SUCCESS_COLOR}[{current_time}] - [SUC] - {msg}{END_FORMAT}",
                 flush=True,
                 end=end,
             )
@@ -55,17 +55,17 @@ class Logger:
         now = datetime.now()
         current_time = now.strftime("%H:%M:%S")
         print(
-            f"{ERROR_COLOR}[{current_time}] - [ERRO] - {msg}{END_FORMAT}",
+            f"{ERROR_COLOR}[{current_time}] - [ERR] - {msg}{END_FORMAT}",
             flush=True,
             end=end,
         )
 
     def debug(self, msg: str, end: str | None = None) -> None:
-        if not self.silent_mode and self.debug_mode:
+        if self.debug_mode:
             now = datetime.now()
             current_time = now.strftime("%H:%M:%S")
             print(
-                f"{DEBUG_COLOR}[{current_time}] - [DEBU] - {msg}{END_FORMAT}",
+                f"{DEBUG_COLOR}[{current_time}] - [DEB] - {msg}{END_FORMAT}",
                 flush=True,
                 end=end,
             )

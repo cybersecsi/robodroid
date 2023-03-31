@@ -468,6 +468,20 @@ files = [
 wcwidth = "*"
 
 [[package]]
+name = "pure-python-adb"
+version = "0.3.0.dev0"
+description = "Pure python implementation of the adb client"
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "pure-python-adb-0.3.0.dev0.tar.gz", hash = "sha256:0ecc89d780160cfe03260ba26df2c471a05263b2cad0318363573ee8043fb94d"},
+]
+
+[package.extras]
+async = ["aiofiles (>=0.4.0)"]
+
+[[package]]
 name = "pycodestyle"
 version = "2.10.0"
 description = "Python style guide checker"
@@ -821,4 +835,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "c636e4a3dfda13342731fbcfe4ab06d4939f6dffc1cc579e65d92b099a880093"
+content-hash = "e43dab63c287e2ceb0c17a1b153dcc914cd50eba0a5ea740932221464737afe5"
