@@ -1,0 +1,11 @@
+{
+  "editor.tabSize": 4,
+  "[python]": {
+    "editor.formatOnType": true,
+    "editor.tabSize": 4,
+  },
+  "python.formatting.autopep8Args": [
+    "--indent-size=4",
+    "--ignore=E121"
+  ]
+}

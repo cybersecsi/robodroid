@@ -28,6 +28,9 @@ def run(
 
 
 def main() -> None:
+    """
+    Entrypoint for RoboDroid, it runs the 'typer' CLI
+    """
     helper.banner(__version__)
     app()
 

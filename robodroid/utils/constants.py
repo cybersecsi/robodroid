@@ -1,3 +1,6 @@
+""""
+Define a bunch of constants
+"""
 from pathlib import Path
 
 FILE_PATH = Path(__file__)

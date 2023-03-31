@@ -65,11 +65,11 @@ def validate_schema(schema: Dict, data: Any) -> bool:
     Returns:
       is_valid (bool): boolean that says if the data is valid or not
     """
-    v = Validator(schema)
-    if v.validate(data):
+    validator = Validator(schema)
+    if validator.validate(data):
         return True
     else:
-        logger.error(f"Data is invalid: {v.errors}")
+        logger.error(f"Data is invalid: {validator.errors}")
         return False
 
 
