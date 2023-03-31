@@ -10,11 +10,11 @@ from robodroid.utils.constants import (
     BOLD_FORMAT,
     END_FORMAT,
 )
+from robodroid.types.enum import LoggerMode, LoggerModeValue
 
 
 class Logger:
-    silent_mode: bool = False
-    debug_mode: bool = False
+    logger_mode: LoggerModeValue = LoggerMode.NORMAL.value
 
     """Implement it as a Singleton"""
 
@@ -23,26 +23,25 @@ class Logger:
             cls.instance = super(Logger, cls).__new__(cls)
         return cls.instance
 
-    def init(self, silent_mode: bool, debug_mode: bool) -> None:
-        self.silent_mode = silent_mode
-        self.debug_mode = debug_mode
+    def init(self, logger_mode: LoggerModeValue) -> None:
+        self.logger_mode = logger_mode
 
     def log(self, msg: str, end: str | None = None) -> None:
-        if not self.silent_mode:
+        if self.logger_mode in [LoggerMode.NORMAL.value, LoggerMode.DEBUG.value]:
             print(msg, flush=True, end=end)
 
     def bold(self, msg: str, end: str | None = None) -> None:
-        if not self.silent_mode:
+        if self.logger_mode in [LoggerMode.NORMAL.value, LoggerMode.DEBUG.value]:
             print(f"{BOLD_FORMAT}{msg}{END_FORMAT}", flush=True, end=end)
 
     def info(self, msg: str, end: str | None = None) -> None:
-        if not self.silent_mode:
+        if self.logger_mode in [LoggerMode.NORMAL.value, LoggerMode.DEBUG.value]:
             now = datetime.now()
             current_time = now.strftime("%H:%M:%S")
             print(f"[{current_time}] - [INF] - {msg}", flush=True, end=end)
 
     def success(self, msg: str, end: str | None = None) -> None:
-        if not self.silent_mode:
+        if self.logger_mode in [LoggerMode.NORMAL.value, LoggerMode.DEBUG.value]:
             now = datetime.now()
             current_time = now.strftime("%H:%M:%S")
             print(
@@ -61,7 +60,7 @@ class Logger:
         )
 
     def debug(self, msg: str, end: str | None = None) -> None:
-        if self.debug_mode:
+        if self.logger_mode == LoggerMode.DEBUG.value:
             now = datetime.now()
             current_time = now.strftime("%H:%M:%S")
             print(
@@ -71,8 +70,8 @@ class Logger:
             )
 
 
-def init(silent_mode: bool, debug_mode: bool) -> None:
-    Logger().init(silent_mode, debug_mode)
+def init(logger_mode: LoggerModeValue) -> None:
+    Logger().init(logger_mode)
 
 
 log = Logger().log
