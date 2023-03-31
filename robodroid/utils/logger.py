@@ -26,6 +26,9 @@ class Logger:
     def init(self, logger_mode: LoggerModeValue) -> None:
         self.logger_mode = logger_mode
 
+    def get_current_mode(self) -> LoggerModeValue:
+        return self.logger_mode
+
     def log(self, msg: str, end: str | None = None) -> None:
         if self.logger_mode in [LoggerMode.NORMAL.value, LoggerMode.DEBUG.value]:
             print(msg, flush=True, end=end)
@@ -80,3 +83,4 @@ info = Logger().info
 success = Logger().success
 error = Logger().error
 debug = Logger().debug
+get_current_mode = Logger().get_current_mode

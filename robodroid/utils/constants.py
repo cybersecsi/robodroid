@@ -8,6 +8,7 @@ MAIN_DIR = FILE_PATH.parent.parent.absolute()  # Root path of the project
 
 DEFAULT_BASE_PATH = ".RoboDroid"
 LIBRARY_FOLDER = "library"
+CONFIGS_FOLDER = "configs"
 ROBODROID_GIT_REPO = "https://github.com/cybersecsi/robodroid"
 ROBODROID_LIBRARY_GIT_REPO = "https://github.com/cybersecsi/robodroid-library"
 
