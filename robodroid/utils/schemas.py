@@ -11,7 +11,7 @@ lib_config_schema = {
         "type": "dict",
         "required": True,
         "schema": {
-            "package-name": {
+            "package_name": {
                 "type": "string",
                 "required": True,
             },
@@ -58,7 +58,7 @@ config_schema = {
         "type": "string",
         "required": True,
     },
-    "device-name": {
+    "device_name": {
         "type": "string",
         "required": True,
     },

@@ -4,8 +4,10 @@
   Entrypoint file for RoboDroid with the CLI commands
 """
 import typer
+import questionary
 from typing import cast
 from robodroid import __version__
+from robodroid.services import frida
 from robodroid.utils import helper, logger
 from robodroid.types.enum import LoggerMode, LoggerModeValue
 
@@ -27,6 +29,16 @@ def run(
 
     # Just printing out an hello msg during development
     logger.log("Hello Robots!")
+
+    configs = helper.get_configs()
+    config_to_run = questionary.select(
+        "What config do yo want to run?",
+        choices=configs,
+    ).ask()
+    config_data = helper.get_config_data(config_to_run)
+    for behavior in config_data["behaviors"]:
+        lib_data = helper.get_lib_data(behavior["id"])
+        frida.load_frida_js(lib_data)
 
 
 def main() -> None:

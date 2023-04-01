@@ -4,9 +4,12 @@
 
 import os
 import pathlib
-from typing import List, Dict, Any
+import functools
+import threading
+from typing import List, Dict, Callable, Any, cast
 from yaml import safe_load, YAMLError
 from cerberus import Validator
+from robodroid import types
 from robodroid.utils import logger, schemas
 from robodroid.utils.constants import DEFAULT_BASE_PATH, LIBRARY_FOLDER, CONFIGS_FOLDER
 
@@ -94,7 +97,7 @@ def is_lib_valid(lib_name: str) -> bool:
         is_valid (bool): whether the  library is valid or not
     """
     # Check for required files
-    required_files = ["config.yaml", "index.ts"]
+    required_files = ["config.yaml", "index.js"]
     libfolder = os.path.join(robodroid_lib_folder(), lib_name)
     if not all(file in os.listdir(libfolder) for file in required_files):
         return False
@@ -164,11 +167,31 @@ def get_configs() -> List[str]:
     configs = [
         f
         for f in os.listdir(configs_folder)
-        if os.path.isfile(os.path.join(configs_folder, f) and f.endswith(".yaml"))
+        if os.path.isfile(os.path.join(configs_folder, f)) and f.endswith(".yaml")
     ]
     configs = [c for c in configs if is_config_valid(c)]
     configs.sort()
     return configs
+
+
+def get_lib_data(lib_name: str) -> types.common.LibData:
+    if not is_lib_valid(lib_name):
+        logger.error("Invalid lib!")
+        raise Exception("Invalid lib")
+    config_filepath = os.path.join(robodroid_lib_folder(), lib_name, "config.yaml")
+    with open(config_filepath, "r", encoding="utf-8") as config_file:
+        config_yaml = cast(types.common.LibData, safe_load(config_file))
+        return config_yaml
+
+
+def get_config_data(config_name: str) -> types.common.ConfigData:
+    if not is_config_valid(config_name):
+        logger.error("Invalid config!")
+        raise Exception("Invalid config")
+    config_filepath = os.path.join(robodroid_configs_folder(), config_name)
+    with open(config_filepath, "r", encoding="utf-8") as config_file:
+        config_yaml = cast(types.common.ConfigData, safe_load(config_file))
+        return config_yaml
 
 
 def create_folder_if_missing(path: str) -> None:
@@ -183,3 +206,23 @@ def create_folder_if_missing(path: str) -> None:
     """
     if not os.path.isdir(path):
         os.makedirs(path)
+
+
+# Using 'wrapt-timeout-decorator' instead of this
+def custom_timeout(timeout: int) -> Callable[..., Callable[..., Any]]:
+    def decorator(func: Callable[..., Any]) -> Callable[..., Any]:
+        @functools.wraps(func)
+        def wrapper(*args: Any, **kwargs: Any) -> Any:
+            def target() -> None:
+                func(*args, **kwargs)
+
+            t = threading.Thread(target=target)
+            t.start()
+            t.join(timeout=timeout)  # set the timeout to 5 seconds
+            if t.is_alive():
+                # if `func` is still running after 5 seconds, raise a `TimeoutError`
+                raise TimeoutError("Function call timed out")
+
+        return wrapper
+
+    return decorator
