@@ -7,7 +7,8 @@ import typer
 import questionary
 from typing import cast
 from robodroid import __version__
-from robodroid.services import frida
+from robodroid.services import adb
+from robodroid.workflow import manager
 from robodroid.utils import helper, logger
 from robodroid.types.enum import LoggerMode, LoggerModeValue
 
@@ -36,9 +37,14 @@ def run(
         choices=configs,
     ).ask()
     config_data = helper.get_config_data(config_to_run)
-    for behavior in config_data["behaviors"]:
-        lib_data = helper.get_lib_data(behavior["id"])
-        frida.load_frida_js(lib_data)
+    adb_instance = adb.RoboDroidAdb()
+    adb_instance.device = adb_instance.list_devices()[0]
+
+    # Create the WorkflowManager
+    wf_manager = manager.RoboDroidWorkflowManager(config_data, adb_instance)
+
+    # Start the workflow
+    wf_manager.run()
 
 
 def main() -> None:

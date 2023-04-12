@@ -1,3 +1,4 @@
+from time import sleep
 from robodroid.services import adb
 from pathlib import Path
 
@@ -13,7 +14,7 @@ test_data = {
 
 
 def adb_connected_instance():
-    adb_instance = adb.Adb()
+    adb_instance = adb.RoboDroidAdb()
     adb_instance.device = adb_instance.list_devices()[0]
     return adb_instance
 
@@ -21,11 +22,12 @@ def adb_connected_instance():
 def test_debug_info():
     adb_instance = adb_connected_instance()
     print(adb_instance.shell_cmd('echo "ciao"'))
+    print(adb_instance.get_adb_version())
     assert False  # Set to False to print stdout
 
 
 def test_adb_version():
-    adb_instance = adb.Adb()
+    adb_instance = adb.RoboDroidAdb()
     assert adb_instance.get_adb_version() == 41
 
 
@@ -42,6 +44,13 @@ def test_chrome_installed():
 def test_dummy_installed():
     adb_instance = adb_connected_instance()
     assert adb_instance.is_apk_installed("com.robodroid.dummy") == False
+
+
+def test_enable_root():
+    adb_instance = adb_connected_instance()
+    root = adb_instance.enable_root()
+    sleep(5)  # To ensure the other tests do not fail after 'enable_root'
+    assert root == True
 
 
 def test_install_apk():
