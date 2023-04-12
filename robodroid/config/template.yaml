@@ -8,8 +8,14 @@ init:
   packages:
     - Path to the .apk to install
 
-behaviors:
-  - id: ID of the script in the RoboDroid library to execute (.e.g. gmail-account-setup)
+workflow:
+  - id: TOCHANGE ID of the script in the RoboDroid library to execute (.e.g. gmail-account-setup)
+    name: TODO
+    type: TODO
     inputs:
       - id: input ID
         value: value for this input
+
+    outputs:
+      - id: output ID
+        value: value for this output

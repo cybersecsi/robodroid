@@ -1,6 +1,9 @@
+import threading
 from typing import List, Any, Callable, cast
 from functools import wraps
 from ppadb.client import Client as AdbClient
+
+# from ppadb.client_async import ClientAsync as AdbClient
 from ppadb.device import Device
 from robodroid.utils import logger
 
@@ -9,7 +12,7 @@ def validate_connection(return_value: Any) -> Callable[..., Callable[..., Any]]:
     def decorator(func: Callable[..., Any]) -> Callable[..., Any]:
         @wraps(func)
         def wrapper(*args: Any, **kw: Any) -> Any:
-            adb_instance: Adb = args[0]
+            adb_instance: RoboDroidAdb = args[0]
             if not adb_instance.device:
                 logger.error("No device connected!")
                 return return_value
@@ -29,7 +32,7 @@ def dump_stdout(connection: Any) -> None:
     connection.close()
 
 
-class Adb:
+class RoboDroidAdb:
     """
     A class for interacting with Android devices using 'pure-python-adb'.
     """
@@ -61,10 +64,43 @@ class Adb:
         self.device.install(apk_path)
 
     @validate_connection(None)
+    def install_from_device(self, apk_path: str) -> None:
+        install_cmd = f"pm install {apk_path}"
+        self.shell_cmd(install_cmd)
+
+    @validate_connection(None)
     def uninstall(self, package_name: str) -> None:
         if self.is_apk_installed(package_name):
             self.device.uninstall(package_name)
 
     @validate_connection(None)
-    def shell_cmd(self, cmd: str) -> None:
-        self.device.shell(cmd, handler=dump_stdout)
+    def push(self, src: str, dst: str, mode: int = 420) -> None:
+        return self.device.push(src, dst, mode)
+
+    @validate_connection(None)
+    def shell_cmd(self, cmd: str, enable_handler: bool = True) -> None:
+        if enable_handler:
+            return self.device.shell(cmd, handler=dump_stdout)
+        return self.device.shell(cmd)
+
+    @validate_connection(None)
+    def thread_shell_cmd(self, cmd: str) -> None:
+        def target() -> None:
+            return self.shell_cmd(cmd)
+
+        exec_thread = threading.Thread(target=target)
+        exec_thread.setDaemon(True)
+        exec_thread.start()
+        # print('Waiting for the thread...')
+        # exec_thread.join()
+        # print('Thread completed')
+
+    @validate_connection(False)
+    def enable_root(self) -> bool:
+        result = False
+        try:
+            result = self.device.root()
+        except RuntimeError as exc:
+            if "adbd is already running as root" in str(exc):
+                result = True
+        return result
