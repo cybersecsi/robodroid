@@ -11,7 +11,14 @@ from yaml import safe_load, YAMLError
 from cerberus import Validator
 from robodroid import types
 from robodroid.utils import logger, schemas
-from robodroid.utils.constants import DEFAULT_BASE_PATH, LIBRARY_FOLDER, CONFIGS_FOLDER
+from robodroid.utils.constants import (
+    DEFAULT_BASE_PATH,
+    LIBRARY_FOLDER,
+    BEHAVIORS_FOLDER,
+    CONFIGS_FOLDER,
+    FRIDA_FOLDER,
+    FRIDA_AGENT_FILE,
+)
 
 
 def banner(version: str) -> None:
@@ -49,12 +56,12 @@ def robodroid_folder() -> str:
 
 def robodroid_lib_folder() -> str:
     """
-    Get the RoboDroid library folder
+    Get the RoboDroid behaviors folder
 
     Returns:
         robodroid_lib_folder (str): the path to the RoboDroid library folder
     """
-    return os.path.join(robodroid_folder(), LIBRARY_FOLDER)
+    return os.path.join(robodroid_folder(), LIBRARY_FOLDER, BEHAVIORS_FOLDER)
 
 
 def robodroid_configs_folder() -> str:
@@ -65,6 +72,16 @@ def robodroid_configs_folder() -> str:
         robodroid_configs_folder (str): the path to the RoboDroid configs folder
     """
     return os.path.join(robodroid_folder(), CONFIGS_FOLDER)
+
+
+def robodroid_frida_folder() -> str:
+    """
+    Get the RoboDroid frida folder
+
+    Returns:
+        robodroid_frida_folder (str): the path to the RoboDroid frida folder
+    """
+    return os.path.join(robodroid_folder(), FRIDA_FOLDER)
 
 
 def validate_schema(schema: Dict, data: Any) -> bool:
@@ -192,6 +209,21 @@ def get_config_data(config_name: str) -> types.common.ConfigData:
     with open(config_filepath, "r", encoding="utf-8") as config_file:
         config_yaml = cast(types.common.ConfigData, safe_load(config_file))
         return config_yaml
+
+
+def get_frida_agent() -> str:
+    """
+    Get the path of the Frida library agent (robodroid-library.js)
+
+    Returns:
+        frida_agent_path (str): the path to the file
+    """
+    agent_filepath = os.path.join(robodroid_folder(), LIBRARY_FOLDER, FRIDA_AGENT_FILE)
+    if not os.path.isfile(agent_filepath):
+        err = "Missing RoboDroid Frida agent"
+        logger.error(err)
+        raise Exception(err)
+    return agent_filepath
 
 
 def create_folder_if_missing(path: str) -> None:

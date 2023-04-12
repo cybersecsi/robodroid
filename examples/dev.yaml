@@ -9,7 +9,7 @@ init:
     - <path_to>/fenix.apk
     - <path_to>/k9.apk
 
-behaviors:
+workflow:
   - id: setup
     name: k9-mail-account-setup
     type: frida
