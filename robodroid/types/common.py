@@ -14,9 +14,15 @@ else:
 class LibInfo(TypedDict):
     package_name: str
     description: str
+    permissions: NotRequired[List[str]]
 
 
 class LibInputs(TypedDict):
+    id: str
+    description: str
+
+
+class LibOutputs(TypedDict):
     id: str
     description: str
 
@@ -25,6 +31,7 @@ class LibData(TypedDict):
     id: str
     info: LibInfo
     inputs: List[LibInputs]
+    outputs: List[LibOutputs]
 
 
 class ConfigInit(TypedDict):
