@@ -10,8 +10,15 @@ class LoggerMode(str, Enum):
     DEBUG = "debug"
 
 
+class WorkflowStepType(str, Enum):
+    FRIDA = "frida-behavior"
+    ADB = "adb"
+
+
 # Convert to literal
 LoggerModeValue = Literal["silent", "normal", "debug"]
+WorkflowStepTypeValue = Literal["frida-behavior", "adb"]
 
 # Assert that the conversion is OK
 assert set(get_args(LoggerModeValue)) == {member.value for member in LoggerMode}
+assert set(get_args(WorkflowStepTypeValue)) == {member.value for member in WorkflowStepType}
