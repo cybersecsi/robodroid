@@ -29,7 +29,6 @@ class RoboDroidWorkflowManager:
 
     def _run_command(self, command: types.common.ConfigStep) -> None:
         print(command)
-        pass
 
     def _run_workflow(self) -> None:
         for step in self.config_data["workflow"]:

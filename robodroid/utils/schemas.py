@@ -19,9 +19,31 @@ lib_config_schema = {
                 "type": "string",
                 "required": True,
             },
+            "permissions": {
+                "type": "list",
+                "required": False,
+            },
         },
     },
     "inputs": {
+        "type": "list",
+        "required": True,
+        "schema": {
+            "type": "dict",
+            "required": True,
+            "schema": {
+                "id": {
+                    "type": "string",
+                    "required": True,
+                },
+                "description": {
+                    "type": "string",
+                    "required": True,
+                },
+            },
+        },
+    },
+    "outputs": {
         "type": "list",
         "required": True,
         "schema": {
@@ -72,7 +94,7 @@ config_schema = {
             }
         },
     },
-    "behaviors": {
+    "workflow": {
         "type": "list",
         "required": True,
         "schema": {
@@ -80,6 +102,8 @@ config_schema = {
             "required": True,
             "schema": {
                 "id": {"type": "string", "required": True},
+                "name": {"type": "string", "required": True},
+                "type": {"type": "string", "required": True},
                 "inputs": {
                     "type": "list",
                     "required": False,
@@ -92,7 +116,6 @@ config_schema = {
                                 "required": True,
                             },
                             "value": {
-                                "type": "string",
                                 "required": True,
                             },
                         },
