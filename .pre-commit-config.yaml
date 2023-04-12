@@ -15,17 +15,13 @@ repos:
     hooks:
       - id: pylint
         name: pylint
-        entry: poetry run pylint --fail-under=8 robodroid/ --output-format=colorized
+        entry: poetry run pylint --fail-under=8 --output-format=colorized
         language: system
-        always_run: true
-        pass_filenames: false
         types: [python]
   - repo: local
     hooks:
       - id: mypy
         name: mypy
-        entry: poetry run mypy --disallow-untyped-calls --disallow-untyped-defs --disallow-incomplete-defs --ignore-missing-imports .
+        entry: poetry run mypy --disallow-untyped-calls --disallow-untyped-defs --disallow-incomplete-defs --ignore-missing-imports
         language: system
-        always_run: true
-        pass_filenames: false
         types: [python]
