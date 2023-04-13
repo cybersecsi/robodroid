@@ -85,8 +85,8 @@ class RoboDroidAdb:
         return self.device.shell(cmd)
 
     @validate_connection(None)
-    def shell_cmd_output(self, cmd: str) -> Any:
-        cmd_output_queue = queue.Queue()
+    def shell_cmd_output(self, cmd: str) -> str:
+        cmd_output_queue: queue.Queue = queue.Queue()
 
         def handler(connection: Any) -> None:
             data = connection.read(1024)

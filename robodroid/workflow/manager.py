@@ -1,4 +1,3 @@
-from time import sleep
 from typing import List, Dict, Any
 from robodroid import types
 from robodroid.workflow import config, commands
