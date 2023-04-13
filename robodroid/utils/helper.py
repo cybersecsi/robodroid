@@ -6,7 +6,9 @@ import os
 import pathlib
 import functools
 import threading
-from typing import List, Dict, Callable, Any, cast
+import tarfile
+import requests
+from typing import List, Dict, Tuple, Callable, Any, cast
 from yaml import safe_load, YAMLError
 from cerberus import Validator
 from robodroid import types
@@ -61,7 +63,17 @@ def robodroid_lib_folder() -> str:
     Returns:
         robodroid_lib_folder (str): the path to the RoboDroid library folder
     """
-    return os.path.join(robodroid_folder(), LIBRARY_FOLDER, BEHAVIORS_FOLDER)
+    return os.path.join(robodroid_folder(), LIBRARY_FOLDER)
+
+
+def robodroid_behaviors_folder() -> str:
+    """
+    Get the RoboDroid behaviors folder
+
+    Returns:
+        robodroid_behaviors_folder (str): the path to the RoboDroid behaviors folder
+    """
+    return os.path.join(robodroid_lib_folder(), BEHAVIORS_FOLDER)
 
 
 def robodroid_configs_folder() -> str:
@@ -82,6 +94,68 @@ def robodroid_frida_folder() -> str:
         robodroid_frida_folder (str): the path to the RoboDroid frida folder
     """
     return os.path.join(robodroid_folder(), FRIDA_FOLDER)
+
+
+def create_folder_if_missing(path: str) -> None:
+    """
+    Create a folder if not exists
+
+    Parameters:
+        path (str): the directory to create
+    """
+    if not os.path.isdir(path):
+        logger.info(f"Creating folder '{path}'")
+        os.makedirs(path)
+
+
+def get_latest_github_release() -> Tuple[str, str]:
+    GITHUB_API = {
+        "base": "https://api.github.com/repos",
+        "commits": "/commits",
+        "latest_release": "releases/latest",
+        "tags": "/tags",
+    }
+    url = f"{GITHUB_API['base']}/cybersecsi/robodroid-library/{GITHUB_API['latest_release']}"
+    req = requests.get(url)
+    assets = req.json()["assets"]
+    asset_to_download = assets[0]
+    download_url = asset_to_download["browser_download_url"]
+    version = req.json()["tag_name"]
+    return download_url, version
+
+
+def download_robodroid_library() -> None:
+    """
+    Download the RoboDroid Frida Library from https://github.com/cybersecsi/robodroid-library
+    """
+
+    download_url, _ = get_latest_github_release()
+    download_folder = robodroid_lib_folder()
+    logger.info(f"Downloading robodroid-library from '{download_url}'")
+    req = requests.get(download_url, stream=True)
+    if req.status_code == 200:
+        fname = os.path.join(download_folder, "robodroid-library.tar.gz")
+        req.raw.decode_content = True
+        with open(fname, "wb") as robodroid_library_file:
+            for chunk in req.iter_content(1024):
+                robodroid_library_file.write(chunk)
+        with tarfile.open(fname) as robodroid_library_archive_file:
+            robodroid_library_archive_file.extractall(download_folder)
+            os.unlink(fname)
+    else:
+        logger.error("Error while downloading 'robodroid-library'")
+
+
+def init_folders() -> None:
+    """
+    Create the folders required to run RoboDroid
+    """
+    create_folder_if_missing(robodroid_folder())
+    create_folder_if_missing(robodroid_configs_folder())
+    create_folder_if_missing(robodroid_frida_folder())
+    if not os.path.isdir(robodroid_lib_folder()):
+        os.makedirs(robodroid_lib_folder())
+        download_robodroid_library()
 
 
 def validate_schema(schema: Dict, data: Any) -> bool:
@@ -115,11 +189,11 @@ def is_lib_valid(lib_name: str) -> bool:
     """
     # Check for required files
     required_files = ["config.yaml", "index.js"]
-    libfolder = os.path.join(robodroid_lib_folder(), lib_name)
-    if not all(file in os.listdir(libfolder) for file in required_files):
+    behaviors_folder = os.path.join(robodroid_behaviors_folder(), lib_name)
+    if not all(file in os.listdir(behaviors_folder) for file in required_files):
         return False
     # Check if the YAML config file is valid
-    config_filepath = os.path.join(robodroid_lib_folder(), lib_name, "config.yaml")
+    config_filepath = os.path.join(robodroid_behaviors_folder(), lib_name, "config.yaml")
     with open(config_filepath, "r", encoding="utf-8") as config_file:
         try:
             config_yaml = safe_load(config_file)
@@ -164,9 +238,11 @@ def get_library() -> List[str]:
     Returns:
         library (List[str]): the RoboDroid library (only valid elements)
     """
-    library_folder = robodroid_lib_folder()
+    behaviors_folder = robodroid_behaviors_folder()
     library = [
-        f for f in os.listdir(library_folder) if not os.path.isfile(os.path.join(library_folder, f))
+        f
+        for f in os.listdir(behaviors_folder)
+        if not os.path.isfile(os.path.join(behaviors_folder, f))
     ]
     library = [l for l in library if is_lib_valid(l)]
     library.sort()
@@ -195,7 +271,7 @@ def get_lib_data(lib_name: str) -> types.common.LibData:
     if not is_lib_valid(lib_name):
         logger.error("Invalid lib!")
         raise Exception("Invalid lib")
-    config_filepath = os.path.join(robodroid_lib_folder(), lib_name, "config.yaml")
+    config_filepath = os.path.join(robodroid_behaviors_folder(), lib_name, "config.yaml")
     with open(config_filepath, "r", encoding="utf-8") as config_file:
         config_yaml = cast(types.common.LibData, safe_load(config_file))
         return config_yaml
@@ -226,21 +302,9 @@ def get_frida_agent() -> str:
     return agent_filepath
 
 
-def create_folder_if_missing(path: str) -> None:
-    """
-    Check if a folder exists, if not create it
-
-    Parameters:
-        path (str): the path to check
-
-    Returns:
-        None
-    """
-    if not os.path.isdir(path):
-        os.makedirs(path)
-
-
 # Using 'wrapt-timeout-decorator' instead of this
+
+
 def custom_timeout(timeout: int) -> Callable[..., Callable[..., Any]]:
     def decorator(func: Callable[..., Any]) -> Callable[..., Any]:
         @functools.wraps(func)
