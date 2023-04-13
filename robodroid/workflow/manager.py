@@ -1,5 +1,5 @@
 from time import sleep
-from typing import List
+from typing import List, Dict, Any
 from robodroid import types
 from robodroid.workflow import config, commands
 from robodroid.services import adb, frida
@@ -15,7 +15,7 @@ class RoboDroidWorkflowManager:
         self.config_data = config_data
         self.adb_instance = adb_instance
         self.frida_instance = frida.RoboDroidFrida(adb_instance)
-        self.outputs = {}
+        self.outputs: Dict[str, Any] = {}
 
     def _run_init(self) -> None:
         # Install packages
@@ -54,7 +54,7 @@ class RoboDroidWorkflowManager:
             # Run Frida behavior
             self.adb_instance.shell_cmd("am clear-debug-app")
             behavior_result = self.frida_instance.run_behavior(lib_data, input_values)
-            if behavior_result["status"] == types.enum.BehaviorResult.COMPLETED.value:
+            if behavior_result["status"] == types.enum.BehaviorResultType.COMPLETED.value:
                 logger.success("Behavior step completed successfully")
                 logger.info(f"Message: {behavior_result['msg']}")
                 if "outputs" in behavior_result.keys():
@@ -66,8 +66,9 @@ class RoboDroidWorkflowManager:
 
     def _run_command(self, step: types.common.ConfigStep) -> None:
         command_name = step["name"]
-        if not command_name in config.workflow_commands.keys():
-            logger.error(f"Unable to found command with id {command_name}")
+        command_type = step["type"]
+        if not command_name in config.workflow_commands[command_type].keys():
+            logger.error(f"Unable to find command with id {command_name}")
             return
 
         logger.info(f"Running command '{command_name}'")
@@ -81,8 +82,11 @@ class RoboDroidWorkflowManager:
             for i in input_values
         ]
         # TODO: Make it general
-        config.workflow_commands[command_name](self.adb_instance, *input_values)
-        logger.info(f"Command '{command_name}' completed")
+        if command_type == types.enum.WorkflowStepType.ADB.value:
+            config.workflow_commands[types.enum.WorkflowStepType.ADB.value][command_name](
+                self.adb_instance, *input_values
+            )
+            logger.info(f"Command '{command_name}' completed")
 
     def _run_workflow(self) -> None:
         # TODO: Move this Frida setup steps in a specific function
@@ -91,11 +95,12 @@ class RoboDroidWorkflowManager:
         sleep(2)  # To ensure the other tests do not fail after 'enable_root'
         self.frida_instance.start_frida_server()
 
+        command_types = [types.enum.WorkflowStepType.ADB.value]
         # Run the actual workflow
         for step in self.config_data["workflow"]:
             if step["type"] == types.enum.WorkflowStepType.FRIDA:
                 self._run_frida_behavior(step)
-            elif step["type"] == types.enum.WorkflowStepType.ADB:
+            elif step["type"] in command_types:
                 self._run_command(step)
             else:
                 logger.error("Unknown step type in Workflow, skipping")

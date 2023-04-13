@@ -27,7 +27,7 @@ class RoboDroidFrida:
     def __init__(self, robodroidAdb: adb.RoboDroidAdb):
         self.adb = robodroidAdb
         self.device = frida.get_usb_device()
-        self.queue = queue.Queue()
+        self.queue: queue.Queue = queue.Queue()
 
     def get_download_fname(self, arch: str) -> str:
         """
@@ -115,19 +115,19 @@ class RoboDroidFrida:
 
     def handle_behavior_result(self, message: typing.Any, data: typing.Any) -> None:
         if message["type"] == "send":
-            behavior_result = json.loads(message["payload"])
+            behavior_result: types.common.BehaviorResult = json.loads(message["payload"])
             self.queue.put(behavior_result)
         elif message["type"] == "error":
-            behavior_result: types.common.BehaviorResult = {
+            err_behavior_result: types.common.BehaviorResult = {
                 "msg": message["description"],
-                "status": "failed",
+                "status": types.enum.BehaviorResultType.FAILED.value,
             }
-            self.queue.put(behavior_result)
+            self.queue.put(err_behavior_result)
         else:
             logger.error(f"Received strange message: {message}")
 
     def run_behavior(
-        self, lib_data: types.common.LibData, input_values: typing.List[str]
+        self, lib_data: types.common.LibData, input_values: typing.List[str | int]
     ) -> types.common.BehaviorResult:
         script_name = helper.get_frida_agent()
         package_name = lib_data["info"]["package_name"]

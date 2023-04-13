@@ -15,7 +15,7 @@ class WorkflowStepType(str, Enum):
     ADB = "adb"
 
 
-class BehaviorResult(str, Enum):
+class BehaviorResultType(str, Enum):
     COMPLETED = "completed"
     FAILED = "failed"
 
@@ -23,9 +23,9 @@ class BehaviorResult(str, Enum):
 # Convert to literal
 LoggerModeValue = Literal["silent", "normal", "debug"]
 WorkflowStepTypeValue = Literal["frida-behavior", "adb"]
-BehaviorResultValue = Literal["completed", "failed"]
+BehaviorResultTypeValue = Literal["completed", "failed"]
 
 # Assert that the conversion is OK
 assert set(get_args(LoggerModeValue)) == {member.value for member in LoggerMode}
 assert set(get_args(WorkflowStepTypeValue)) == {member.value for member in WorkflowStepType}
-assert set(get_args(BehaviorResultValue)) == {member.value for member in BehaviorResult}
+assert set(get_args(BehaviorResultTypeValue)) == {member.value for member in BehaviorResultType}
