@@ -5,16 +5,18 @@ type: Device type (redroid, avd, waydroid, real-device)
 device_name: Device name (e.g. 'robodroid-test')
 
 init:
-  packages:
+  install:
     - Path to the .apk to install
+  clear:
+    - Package to clean with "pm clear <package-name>"
 
 workflow:
-  - id: TOCHANGE ID of the script in the RoboDroid library to execute (.e.g. gmail-account-setup)
-    name: TODO
-    type: TODO
+  - id: ID of the step in this workflow
+    name: ID of the script in the RoboDroid library to execute (.e.g. k9-mail-account-setup)
+    type: Type of the step (e.g. 'frida-behavior', 'adb')
     inputs:
       - id: input ID
-        value: value for this input
+        value: value for this input (use 'robodroid.outputs.<step_id>.<step_output>' to use the outputs of previous steps)
 
     outputs:
       - id: output ID
