@@ -14,6 +14,10 @@ class RoboDroidWorkflowManager:
     def __init__(self, config_data: types.common.ConfigData, adb_instance: adb.RoboDroidAdb):
         self.config_data = config_data
         self.adb_instance = adb_instance
+        is_root_enabled = self.adb_instance.is_root_enabled()
+        if not is_root_enabled:
+            logger.error("Root is not enabled, restarting adbd as root (it may take a while)...")
+            self.adb_instance.enable_root()
         self.frida_instance = frida.RoboDroidFrida(adb_instance)
         self.outputs: Dict[str, Any] = {}
 
@@ -81,7 +85,6 @@ class RoboDroidWorkflowManager:
             else i
             for i in input_values
         ]
-        # TODO: Make it general
         if command_type == types.enum.WorkflowStepType.ADB.value:
             config.workflow_commands[types.enum.WorkflowStepType.ADB.value][command_name](
                 self.adb_instance, *input_values
@@ -90,9 +93,6 @@ class RoboDroidWorkflowManager:
 
     def _run_workflow(self) -> None:
         # TODO: Move this Frida setup steps in a specific function
-        logger.info("Restarting adbd as root and waiting 2 seconds before continuing")
-        self.adb_instance.enable_root()
-        sleep(2)  # To ensure the other tests do not fail after 'enable_root'
         self.frida_instance.start_frida_server()
 
         command_types = [types.enum.WorkflowStepType.ADB.value]

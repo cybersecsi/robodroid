@@ -21,8 +21,7 @@ def adb_connected_instance():
 
 def test_debug_info():
     adb_instance = adb_connected_instance()
-    print(adb_instance.shell_cmd('echo "ciao"'))
-    print(adb_instance.get_adb_version())
+    print(adb_instance.is_root_enabled())
     assert False  # Set to False to print stdout
 
 

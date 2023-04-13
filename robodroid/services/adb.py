@@ -1,4 +1,5 @@
 import threading
+import queue
 from typing import List, Any, Callable, cast
 from functools import wraps
 from ppadb.client import Client as AdbClient
@@ -84,6 +85,20 @@ class RoboDroidAdb:
         return self.device.shell(cmd)
 
     @validate_connection(None)
+    def shell_cmd_output(self, cmd: str) -> Any:
+        cmd_output_queue = queue.Queue()
+
+        def handler(connection: Any) -> None:
+            data = connection.read(1024)
+            connection.close()
+            result = data.decode("utf-8") if data else None
+            cmd_output_queue.put(result)
+
+        self.device.shell(cmd, handler)
+        result = cmd_output_queue.get()
+        return result
+
+    @validate_connection(None)
     def thread_shell_cmd(self, cmd: str) -> None:
         def target() -> None:
             return self.shell_cmd(cmd)
@@ -96,6 +111,11 @@ class RoboDroidAdb:
         # print('Thread completed')
 
     @validate_connection(False)
+    def is_root_enabled(self) -> bool:
+        result: str = self.shell_cmd_output("whoami")
+        return result.strip() == "root"
+
+    @validate_connection(False)
     def enable_root(self) -> bool:
         result = False
         try:
@@ -103,4 +123,5 @@ class RoboDroidAdb:
         except RuntimeError as exc:
             if "adbd is already running as root" in str(exc):
                 result = True
+        self.device.wait_boot_complete()
         return result

@@ -11,4 +11,4 @@ def test_get_library():
 
 def test_get_configs():
     configs = helper.get_configs()
-    assert len(configs) == 1
+    assert len(configs) == 4
