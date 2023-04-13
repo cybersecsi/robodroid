@@ -31,14 +31,22 @@ def run(
     # Just printing out an hello msg during development
     logger.log("Hello Robots!")
 
+    # Select device
+    adb_instance = adb.RoboDroidAdb()
+    devices = [d.get_serial_no() for d in adb_instance.list_devices()]
+    device_to_connect = questionary.select(
+        "What device do you want to connect to?",
+        choices=devices,
+    ).ask()
+    adb_instance.connect(device_to_connect)
+
+    # Select config to run
     configs = helper.get_configs()
     config_to_run = questionary.select(
         "What config do yo want to run?",
         choices=configs,
     ).ask()
     config_data = helper.get_config_data(config_to_run)
-    adb_instance = adb.RoboDroidAdb()
-    adb_instance.device = adb_instance.list_devices()[0]
 
     # Create the WorkflowManager
     wf_manager = manager.RoboDroidWorkflowManager(config_data, adb_instance)
