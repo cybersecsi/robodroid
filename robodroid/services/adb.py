@@ -64,9 +64,9 @@ class RoboDroidAdb:
         self.device.install(apk_path)
 
     @validate_connection(None)
-    def install_from_device(self, apk_path: str) -> None:
+    def install_from_device(self, apk_path: str, enable_handler: bool = True) -> None:
         install_cmd = f"pm install {apk_path}"
-        self.shell_cmd(install_cmd)
+        self.shell_cmd(install_cmd, enable_handler)
 
     @validate_connection(None)
     def uninstall(self, package_name: str) -> None:

@@ -1,65 +1,16 @@
 import time
 import os
 import typing
+import queue
+import json
 import lzma
 import requests
 import frida
 import humps
+from tenacity import retry, stop_after_attempt
 from robodroid import types
 from robodroid.services import adb
 from robodroid.utils import helper, logger
-
-
-def on_message(message: typing.Any, data: typing.Any) -> None:
-    print(data)
-    if message["type"] == "send":
-        print("[*] {0}".format(message["payload"]))
-    else:
-        print(message)
-
-
-def read_hooking_script(filename: str) -> str | None:
-    with open(filename, "r") as raw:
-        try:
-            return raw.read()
-        except (IOError, OSError):
-            return None
-
-
-def load_frida_js(
-    lib_data: types.common.LibData, inputs: typing.List[types.common.ConfigStepInput]
-) -> None:
-    package_name = lib_data["info"]["package_name"]
-    script_name = helper.get_frida_agent()
-    try:
-        device = frida.get_usb_device()
-        pid = device.spawn(package_name)
-        device.resume(pid)
-        session = device.attach(pid)
-        hooking_script = session.create_script(read_hooking_script(script_name))
-        if hooking_script:
-            hooking_script.on("message", on_message)
-            hooking_script.load()
-        else:
-            logger.error("The specified script '{0}' was not found!")
-
-        time.sleep(1)  # Without it Java.perform silently fails
-
-        # Retrieve the RPC exports and the specific method
-        robodroid_agent = hooking_script.exports
-        frida_fn = getattr(robodroid_agent, humps.dekebabize(lib_data["id"]))
-
-        # Get only the values as a list
-        input_values = [v["value"] for v in inputs]
-        frida_fn(*input_values)
-
-        # stop python script from terminating
-        input("Press any key to continue...")
-        # script = session.create_script(open(script_name).read())
-        # return script
-    except TimeoutError as exc:
-        logger.error(str(exc))
-
 
 device_arch_frida_mapping = {
     "armeabi": "arm",
@@ -75,6 +26,8 @@ class RoboDroidFrida:
 
     def __init__(self, robodroidAdb: adb.RoboDroidAdb):
         self.adb = robodroidAdb
+        self.device = frida.get_usb_device()
+        self.queue = queue.Queue()
 
     def get_download_fname(self, arch: str) -> str:
         """
@@ -145,3 +98,58 @@ class RoboDroidFrida:
         self.adb.shell_cmd("killall frida-server", False)
         self.adb.thread_shell_cmd("/data/local/tmp/frida-server")
         logger.success("Frida server correctly started")
+
+    @retry(stop=stop_after_attempt(10))
+    def spawn_and_attach(self, package_name: str) -> typing.Tuple[int, frida.core.Session]:
+        pid = self.device.spawn(package_name)
+        self.device.resume(pid)
+        session = self.device.attach(pid)
+        return pid, session
+
+    def read_hooking_script(self, filename: str) -> str | None:
+        with open(filename, "r") as raw:
+            try:
+                return raw.read()
+            except (IOError, OSError):
+                return None
+
+    def handle_behavior_result(self, message: typing.Any, data: typing.Any) -> None:
+        if message["type"] == "send":
+            behavior_result = json.loads(message["payload"])
+            self.queue.put(behavior_result)
+        elif message["type"] == "error":
+            behavior_result: types.common.BehaviorResult = {
+                "msg": message["description"],
+                "status": "failed",
+            }
+            self.queue.put(behavior_result)
+        else:
+            logger.error(f"Received strange message: {message}")
+
+    def run_behavior(
+        self, lib_data: types.common.LibData, input_values: typing.List[str]
+    ) -> types.common.BehaviorResult:
+        script_name = helper.get_frida_agent()
+        package_name = lib_data["info"]["package_name"]
+        pid, session = self.spawn_and_attach(package_name)
+        hooking_script = session.create_script(self.read_hooking_script(script_name))
+        hooking_script.on("message", self.handle_behavior_result)
+        hooking_script.load()
+        time.sleep(1)  # Without it Java.perform silently fails
+
+        # Retrieve the RPC exports and the specific method
+        robodroid_agent = hooking_script.exports
+        frida_fn = getattr(robodroid_agent, humps.dekebabize(lib_data["id"]))
+
+        # Get only the values as a list
+        logger.info(f"Starting behavior {lib_data['id']}")
+        if input_values:
+            logger.info("Inputs:")
+            for i in input_values:
+                logger.info(f" • {i}")
+        frida_fn(*input_values, "normal")  # TODO: Set the log level from CLI
+
+        behavior_result: types.common.BehaviorResult = self.queue.get()
+        session.detach()
+        time.sleep(1)  # Just to be sure
+        return behavior_result

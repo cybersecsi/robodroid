@@ -1,6 +1,7 @@
 from time import sleep
+from typing import List
 from robodroid import types
-from robodroid.workflow import commands
+from robodroid.workflow import config, commands
 from robodroid.services import adb, frida
 from robodroid.utils import helper, logger
 
@@ -13,49 +14,92 @@ class RoboDroidWorkflowManager:
     def __init__(self, config_data: types.common.ConfigData, adb_instance: adb.RoboDroidAdb):
         self.config_data = config_data
         self.adb_instance = adb_instance
+        self.frida_instance = frida.RoboDroidFrida(adb_instance)
         self.outputs = {}
 
     def _run_init(self) -> None:
         # Install packages
-        if "init" in self.config_data:
-            for package in self.config_data["init"]["packages"]:
-                self.adb_instance.install(package)
+        if not "init" in self.config_data:
+            return
+
+        for apk in self.config_data["init"]["install"]:
+            logger.info(f"Installing app from '{apk}'")
+            self.adb_instance.install(apk)
+        for package_name in self.config_data["init"]["clear"]:
+            logger.info(f"Cleaning package '{package_name}'")
+            self.adb_instance.shell_cmd(f"pm clear {package_name}", False)
 
     def _run_frida_behavior(self, behavior: types.common.ConfigStep) -> None:
-        lib_name = behavior["name"]
-        inputs = behavior["inputs"]
-        lib_data = helper.get_lib_data(lib_name)
-        package_name = lib_data["info"]["package_name"]
-        # Check if permissions must be set
-        if "permissions" in lib_data["info"].keys():
-            permissions = lib_data["info"]["permissions"]
-            for permission in permissions:
-                logger.info(f"Adding permission {permission} to package {package_name}")
-                commands.adb_add_permission(self.adb_instance, package_name, permission)
+        while True:
+            reserved_output = "robodroid.outputs."
+            lib_name = behavior["name"]
+            inputs = behavior["inputs"]
+            input_values: List[str | int] = [i["value"] for i in inputs]
+            input_values = [
+                self.outputs[i.split(".")[2]][i.split(".")[3]]
+                if isinstance(i, str) and i.startswith(reserved_output)
+                else i
+                for i in input_values
+            ]
 
-        # Run Frida behavior
-        frida.load_frida_js(lib_data, inputs)
+            lib_data = helper.get_lib_data(lib_name)
+            package_name = lib_data["info"]["package_name"]
+            # Check if permissions must be set
+            if "permissions" in lib_data["info"].keys():
+                permissions = lib_data["info"]["permissions"]
+                for permission in permissions:
+                    logger.info(f"Adding permission {permission} to package {package_name}")
+                    commands.adb_add_permission(self.adb_instance, package_name, permission)
 
-    def _run_command(self, command: types.common.ConfigStep) -> None:
-        print(command)
+            # Run Frida behavior
+            self.adb_instance.shell_cmd("am clear-debug-app")
+            behavior_result = self.frida_instance.run_behavior(lib_data, input_values)
+            if behavior_result["status"] == types.enum.BehaviorResult.COMPLETED.value:
+                logger.success("Behavior step completed successfully")
+                logger.info(f"Message: {behavior_result['msg']}")
+                if "outputs" in behavior_result.keys():
+                    logger.info(f"Outputs: {behavior_result['outputs']}")
+                    self.outputs[behavior["id"]] = behavior_result["outputs"]
+                break
+            else:
+                logger.error("Behavior failed, starting over")
+
+    def _run_command(self, step: types.common.ConfigStep) -> None:
+        command_name = step["name"]
+        if not command_name in config.workflow_commands.keys():
+            logger.error(f"Unable to found command with id {command_name}")
+            return
+
+        logger.info(f"Running command '{command_name}'")
+        reserved_output = "robodroid.outputs."
+        inputs = step["inputs"]
+        input_values: List[str | int] = [i["value"] for i in inputs]
+        input_values = [
+            self.outputs[i.split(".")[2]][i.split(".")[3]]
+            if isinstance(i, str) and i.startswith(reserved_output)
+            else i
+            for i in input_values
+        ]
+        # TODO: Make it general
+        config.workflow_commands[command_name](self.adb_instance, *input_values)
+        logger.info(f"Command '{command_name}' completed")
 
     def _run_workflow(self) -> None:
         # TODO: Move this Frida setup steps in a specific function
         logger.info("Restarting adbd as root and waiting 2 seconds before continuing")
         self.adb_instance.enable_root()
         sleep(2)  # To ensure the other tests do not fail after 'enable_root'
-        frida_instance = frida.RoboDroidFrida(self.adb_instance)
-        frida_instance.start_frida_server()
+        self.frida_instance.start_frida_server()
 
         # Run the actual workflow
         for step in self.config_data["workflow"]:
             if step["type"] == types.enum.WorkflowStepType.FRIDA:
-                outputs = self._run_frida_behavior(step)
-                self.outputs[step["id"]] = outputs
+                self._run_frida_behavior(step)
             elif step["type"] == types.enum.WorkflowStepType.ADB:
                 self._run_command(step)
             else:
                 logger.error("Unknown step type in Workflow, skipping")
+        logger.success("Workflow completed!")
 
     def run(self) -> None:
         self._run_init()

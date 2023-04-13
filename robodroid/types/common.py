@@ -1,6 +1,6 @@
 import sys
 from typing import List, Optional
-from robodroid.types.enum import WorkflowStepType
+from robodroid.types.enum import WorkflowStepType, BehaviorResult
 
 # Manage import of 'TypedDict', 'NotRequired'
 if sys.version_info >= (3, 11):
@@ -35,7 +35,8 @@ class LibData(TypedDict):
 
 
 class ConfigInit(TypedDict):
-    packages: List[str]
+    install: List[str]
+    clear: List[str]
 
 
 class ConfigStepInput(TypedDict):
@@ -58,3 +59,9 @@ class ConfigData(TypedDict):
     device_name: str
     init: NotRequired[ConfigInit]
     workflow: List[ConfigStep]
+
+
+class BehaviorResult(TypedDict):
+    status: BehaviorResult
+    msg: str
+    outputs: NotRequired[str]

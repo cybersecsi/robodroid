@@ -88,10 +88,14 @@ config_schema = {
         "type": "dict",
         "required": False,
         "schema": {
-            "packages": {
+            "install": {
                 "type": "list",
                 "required": True,
-            }
+            },
+            "clear": {
+                "type": "list",
+                "required": True,
+            },
         },
     },
     "workflow": {
