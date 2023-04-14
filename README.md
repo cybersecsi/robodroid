@@ -15,6 +15,7 @@
 ## Table of Contents
 
 - [Overview](#overview)
+- [Install](#install)
 - [Usage](#usage)
 - [Demo](#demo)
 - [Credits](#credits)
@@ -23,6 +24,15 @@
 ## Overview
 
 TODO
+
+## Install
+You can easily install it by running:
+```
+pipx install robodroid
+```
+
+We suggest you to use ``pipx`` instead of ``pip`` because in future Python versions package installation with ``pip`` will be removed outside virtual environments.
+
 ## Usage
 ```
 robodroid --help
