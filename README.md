@@ -24,8 +24,32 @@
 
 TODO
 ## Usage
+```
+robodroid --help
+```
 
-TODO
+This will display the help for the tool:
+
+```
+    ███████╗███████╗ ██████╗███████╗██╗
+    ██╔════╝██╔════╝██╔════╝██╔════╝██║
+    ███████╗█████╗  ██║     ███████╗██║
+    ╚════██║██╔══╝  ██║     ╚════██║██║
+    ███████║███████╗╚██████╗███████║██║
+    ╚══════╝╚══════╝ ╚═════╝╚══════╝╚═╝
+    RoboDroid v0.0.1
+
+
+ Usage: robodroid [OPTIONS]
+
+ Manage and deploy Android machines with pre-defined behaviors for Cyber Range environments
+
+╭─ Options ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ --log-mode          [silent|normal|debug]  Set logging mode [default: normal]                                                   │
+│ --help      -h                             Show this message and exit.                                                          │
+╰─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+```
+
 ## Demo
 
 TODO
