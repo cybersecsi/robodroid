@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "robodroid"
-version = "0.0.0"
+version = "0.0.1"
 description = "Manage and deploy Android machines with pre-defined behaviors for Cyber Range environments"
 authors = ["Angelo Delicato <thelicato@duck.com>"]
 license = "GPL-3.0"
