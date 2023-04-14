@@ -19,6 +19,7 @@ RoboDroid is a cutting-edge software tool designed to simplify the process of ma
 - [Context](#context)
 - [Overview](#overview)
 - [How It Works](#how-it-works)
+  - [Interaction with the Frida Agent](#interaction-with-the-frida-agent)
 - [Install](#install)
   - [RoboDroid Library](#robodroid-library)
 - [Usage](#usage)
@@ -53,7 +54,18 @@ One example of a workflow that can be used in a cyber range environment involves
 By creating and running workflows like this, users can simulate realistic cyber attack scenarios and test their defenses against a wide range of threats. This helps to ensure that systems and networks are well-protected against potential vulnerabilities, and that users are prepared to respond effectively in the event of an attack.
 
 ## How It Works
-TODO
+![How RoboDroid Works](https://raw.githubusercontent.com/cybersecsi/robodroid/main/docs/how-it-works.png)
+
+### Interaction with the Frida Agent
+
+RoboDroid ommunicates with the Frida Agent provided by the RoboDroid Library via messages, providing efficient interaction.
+When the RoboDroid begins a specific behavior, it awaits a message from the Frida Agent. The message could be of either ``FAILURE`` or ``COMPLETED`` type.
+
+If the message type is ``FAILURE`` RoboDroid restarts the current behavior to ensure successful completion. If the message type is ``COMPLETED`` the current step is marked as finished, and RoboDroid moves to the next step.
+
+Furthermore, a message of type ``COMPLETED`` can also contain **outputs** that can be used in subsequent steps. This ensures that the tool can optimize its behavior to achieve accurate simulation of human-like actions on mobile devices.
+
+By providing this robust communication process, RoboDroid ensures the seamless integration of the Frida Agent into its toolset, and facilitates the creation of complex workflows for the simulation of mobile devices in a Cyber Range environment.
 
 ## Install
 You can easily install it by running:
