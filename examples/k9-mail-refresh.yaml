@@ -1,0 +1,12 @@
+id: k9-mail-refresh
+
+init:
+  install:
+    - <path_to>/k9.apk
+  clear: []
+
+workflow:
+  - id: get-link
+    name: k9-mail-refresh-and-get-link
+    type: frida-behavior
+    inputs: []

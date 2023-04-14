@@ -1,0 +1,58 @@
+[tool.poetry]
+name = "robodroid"
+version = "0.0.1"
+description = "Manage and deploy Android machines with pre-defined behaviors for Cyber Range environments"
+authors = ["Angelo Delicato <thelicato@duck.com>"]
+license = "GPL-3.0"
+readme = "README.md"
+exclude = [
+    { path = "tests" }
+]
+packages = [
+    {include = "robodroid"}
+]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+typer = {extras = ["all"], version = "^0.7.0"}
+questionary = "^1.10.0"
+typing-extensions = "^4.5.0"
+pyyaml = "^6.0"
+cerberus = "^1.3.4"
+pure-python-adb = "^0.3.0.dev0"
+frida = "^16.0.11"
+pylint = "2.15.8"
+wrapt-timeout-decorator = "^1.3.12.2"
+requests = "^2.28.2"
+pyhumps = "^3.8.0"
+tenacity = "^8.2.2"
+
+[tool.poetry.group.dev.dependencies]
+pre-commit = "^3.2.1"
+mypy = "^1.1.1"
+black = "^23.3.0"
+autopep8 = "^2.0.2"
+poethepoet = "^0.19.0"
+pytest = "^7.2.2"
+pytest-cov = "^4.0.0"
+
+[tool.poe.tasks]
+lint = "pylint --fail-under=8 robodroid/ --output-format=colorized"
+black = "black --config pyproject.toml ./robodroid"
+typecheck = "mypy --disallow-untyped-calls --disallow-untyped-defs --disallow-incomplete-defs --ignore-missing-imports ."
+add-types = "mypy --install-types ."
+test = "pytest --cov=robodroid -W ignore::DeprecationWarning"
+
+[tool.black]
+line-length = 100
+include = 'robodroid/.*\.pyi?'
+
+[tool.mypy]
+exclude = 'robodroid/tests'
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+robodroid = 'robodroid.main:main'

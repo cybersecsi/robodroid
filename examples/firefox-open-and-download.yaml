@@ -1,0 +1,20 @@
+id: firefox-open-and-download
+
+init:
+  install:
+    - <path_to>/fenix.apk
+  clear: []
+
+workflow:
+  - id: open-and-download
+    name: firefox-android-open-and-download
+    type: frida-behavior
+    inputs:
+      - id: link
+        value: <link_of_an_apk>
+  - id: install-apk
+    name: adb-apk-install-from-device
+    type: adb
+    inputs:
+      - id: path
+        value: robodroid.outputs.open-and-download.filePath

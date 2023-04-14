@@ -1,0 +1,41 @@
+id: dev
+
+init:
+  install:
+    - <path_to>/fenix.apk
+    - <path_to>/k9.apk
+  clear:
+    - com.fsck.k9
+
+workflow:
+  - id: setup
+    name: k9-mail-account-setup
+    type: frida
+    inputs:
+      - id: email
+        value: robodroid-dev@outlook.com
+      - id: password
+        value: ThisShouldBeAStrongPwd
+      - id: incomingServer
+        value: outlook.office365.com
+      - id: incomingPort
+        value: 993
+      - id: outgoingServer
+        value: smtp-mail.outlook.com
+      - id: outgoingPort
+        value: 587
+  - id: get-link
+    name: k9-mail-refresh-and-get-link
+    type: frida
+  - id: open-and-download
+    name: firefox-android-open-link-and-download
+    type: frida
+    inputs:
+      - id: link
+        value: robodroid.outputs.get-link.link
+  - id: install-apk
+    name: adb-apk-install-from-device
+    type: adb
+    inputs:
+      - id: path
+        value: robodroid.outputs.open-and-downloa.filePath

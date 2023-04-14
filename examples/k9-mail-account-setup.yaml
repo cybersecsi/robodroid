@@ -1,0 +1,25 @@
+id: k9-mail-setup
+
+init:
+  install:
+    - <path_to>/k9.apk
+  clear:
+    - com.fsck.k9
+
+workflow:
+  - id: setup
+    name: k9-mail-account-setup
+    type: frida-behavior
+    inputs:
+      - id: email
+        value: robodroid-dev@outlook.com
+      - id: password
+        value: ThisShouldBeAStrongPwd
+      - id: incomingServer
+        value: outlook.office365.com
+      - id: incomingPort
+        value: 993
+      - id: outgoingServer
+        value: smtp-mail.outlook.com
+      - id: outgoingPort
+        value: 587
