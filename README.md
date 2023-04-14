@@ -19,6 +19,7 @@ RoboDroid is a cutting-edge software tool designed to simplify the process of ma
 - [Context](#context)
 - [Overview](#overview)
 - [Install](#install)
+- [RoboDroid Library](#robodroid-library)
 - [Usage](#usage)
 - [Demo](#demo)
 - [Credits](#credits)
@@ -42,6 +43,9 @@ pipx install robodroid
 ```
 
 We suggest you to use ``pipx`` instead of ``pip`` because in future Python versions package installation with ``pip`` will be removed outside virtual environments.
+
+## RoboDroid Library
+**RoboDroid** has built-in support for automatic behaviors download (and **soon** auto-update) from the [RoboDroid Library](https://github.com/cybersecsi/robodroid-library) repository. If you want to add a new Frida behavior we suggest you to head over to the specific repository and make a Pull Request.
 
 ## Usage
 ```
@@ -72,7 +76,15 @@ This will display the help for the tool:
 
 ## Demo
 
-TODO
+We made a brief demo video that shows RoboDroid in action with a template that does the following:
+1. Sets up and email account on the K9 Mail app
+2. Waits indefinitely for a new email and returns the first link inside it
+3. Opens the link with the Firefox Android (Fenix) application, downloads the linked file and installs it
+
+This workflow simulates a common phishing attack (although simplified) that can be used in a next-generation Cyber Range involving Android Mobile Devices.
+[![RoboDroid Introduction](http://img.youtube.com/vi/YOUTUBE_VIDEO_ID_HERE/0.jpg)](http://www.youtube.com/watch?v=YOUTUBE_VIDEO_ID_HERE "RoboDroid Introduction")
+
+
 ## Credits
 
 Developed by Angelo Delicato [@SecSI](https://secsi.io)
