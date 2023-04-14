@@ -19,9 +19,10 @@ RoboDroid is a cutting-edge software tool designed to simplify the process of ma
 - [Context](#context)
 - [Overview](#overview)
 - [Install](#install)
-- [RoboDroid Library](#robodroid-library)
+  - [RoboDroid Library](#robodroid-library)
 - [Usage](#usage)
 - [Demo](#demo)
+- [Roadmap](#roadmap)
 - [Credits](#credits)
 - [License](#license)
 
@@ -44,7 +45,7 @@ pipx install robodroid
 
 We suggest you to use ``pipx`` instead of ``pip`` because in future Python versions package installation with ``pip`` will be removed outside virtual environments.
 
-## RoboDroid Library
+### RoboDroid Library
 **RoboDroid** has built-in support for automatic behaviors download (and **soon** auto-update) from the [RoboDroid Library](https://github.com/cybersecsi/robodroid-library) repository. If you want to add a new Frida behavior we suggest you to head over to the specific repository and make a Pull Request.
 
 ## Usage
@@ -82,8 +83,20 @@ We made a brief demo video that shows RoboDroid in action with a template that d
 3. Opens the link with the Firefox Android (Fenix) application, downloads the linked file and installs it
 
 This workflow simulates a common phishing attack (although simplified) that can be used in a next-generation Cyber Range involving Android Mobile Devices.
+
 [![RoboDroid Introduction](http://img.youtube.com/vi/jn8OQZyNLD4/0.jpg)](http://www.youtube.com/watch?v=jn8OQZyNLD4 "RoboDroid Introduction")
 
+
+## Roadmap
+*RoboDroid* is a newborn tool and still needs to grow up! Currently these are the features we plan to add very soon:
+- [ ] Automatic deploy of AVD
+- [ ] Automatic deploy of ReDroid instance
+- [ ] Automatic deploy of Genymotion instance
+- [ ] Multi-device support
+- [ ] Interactive mode (without workflow config file)
+- [ ] Continuous workflow mode (restart the whole workflow indefinitely until manually stopped)
+
+Of course we plan to add more and more behaviors in the [RoboDroid Library](https://github.com/cybersecsi/robodroid-library) and more and more ``adb`` commands in this repo. We also encourage every user to contribute to this projet and make it better!
 
 ## Credits
 
