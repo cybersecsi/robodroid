@@ -16,12 +16,20 @@ RoboDroid is a cutting-edge software tool designed to simplify the process of ma
 <!-- omit in toc -->
 ## Table of Contents
 
+- [Context](#context)
 - [Overview](#overview)
 - [Install](#install)
 - [Usage](#usage)
 - [Demo](#demo)
 - [Credits](#credits)
 - [License](#license)
+
+## Context
+Mobile devices have become ubiquitous in today's world. People use smartphones for almost every aspect of their lives, including banking, shopping, and communication. As a result, mobile devices are now a primary target for cybercriminals.
+
+However, the security of mobile devices is often overlooked in cybersecurity training and testing environments. This can leave organizations vulnerable to attacks that exploit the weaknesses of mobile devices. Therefore, it is important to introduce mobile components in next-generation cyber-ranges to adapt to the current world that is more and more smartphone-addicted.
+
+**RoboDroid** is designed to help fill this gap by providing a set of tools that can simulate human-like smartphone behavior. The pre-defined behaviors are created using Frida and are managed in the [RoboDroid Library](https://github.com/cybersecsi/robodroid-library) repository.
 
 ## Overview
 
