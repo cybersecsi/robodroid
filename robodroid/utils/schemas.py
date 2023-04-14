@@ -68,22 +68,6 @@ config_schema = {
         "type": "string",
         "required": True,
     },
-    "host": {
-        "type": "string",
-        "required": True,
-    },
-    "port": {
-        "type": "integer",
-        "required": True,
-    },
-    "type": {
-        "type": "string",
-        "required": True,
-    },
-    "device_name": {
-        "type": "string",
-        "required": True,
-    },
     "init": {
         "type": "dict",
         "required": False,

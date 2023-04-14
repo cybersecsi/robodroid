@@ -1,8 +1,4 @@
 id: Dev
-host: localhost
-port: 5037
-type: avd
-device_name: emulator-5554
 
 init:
   packages:

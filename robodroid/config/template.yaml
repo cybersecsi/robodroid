@@ -1,8 +1,4 @@
 id: Config ID
-host: localhost
-port: 5037
-type: Device type (redroid, avd, waydroid, real-device)
-device_name: Device name (e.g. 'robodroid-test')
 
 init:
   install:

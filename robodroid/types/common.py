@@ -53,10 +53,6 @@ class ConfigStep(TypedDict):
 
 class ConfigData(TypedDict):
     id: str
-    host: str
-    port: int
-    type: str
-    device_name: str
     init: NotRequired[ConfigInit]
     workflow: List[ConfigStep]
 
