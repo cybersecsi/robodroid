@@ -37,13 +37,18 @@ However, the security of mobile devices is often overlooked in cybersecurity tra
 
 ## Overview
 
-The impact of mobiles systems on security incidents is growing more and more everyday, because of that many organizations need to be fully prepared to avoid/respond to those kind of threats. Currently the most common way to fulfill this requirement is to use a Cyber Range; the problem is that there is still a gap to fill between the need of the organizations/countries to prepare against mobile security threats and the features provided by current-generation Cyber Ranges. The current gap hinders Cyber Range users from achieving complete readiness for situations that involve mobile systems, which are becoming more widespread.
 
-The goal of **RoboDroid** is to fill this gap by providing a simple way to introduce mobile components in Cyber Range environments. Its main objective is to provide users with an easy-to-use platform that allows them to simulate human-like behaviors and actions on mobile devices.
+The goal of **RoboDroid** is to provide a simple way to introduce mobile components in Cyber Range environments. Its main objective is to provide users with an easy-to-use platform that allows them to simulate human-like behaviors and actions on mobile devices.
 
 RoboDroid leverages [Frida](https://frida.re) technology to run behaviors that are specific to applications, while using ``ADB`` for all other operations. This powerful combination enables users to create workflows of preset behaviors that can simulate a mobile user's actions.
 
-One example of a workflow that can be used in a cyber range environment involves simulating a mobile user receiving a phishing email, clicking on the link contained in the email, and subsequently downloading a malware. The workflow can be broken down into the following steps:
+One example of a workflow that can be used in a cyber range environment involves simulating a mobile user receiving a phishing email, clicking on the link contained in the email, and subsequently downloading a malware.
+
+The following picture summarizes it:
+
+![Kill Chain Example](https://raw.githubusercontent.com/cybersecsi/robodroid/main/docs/kill-chain-example.png)
+
+The workflow can be broken down into the following steps:
 
 1. The user receives a phishing email containing a link that appears legitimate.
 2. The user clicks on the link, which redirects them to a malicious website.
