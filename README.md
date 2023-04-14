@@ -7,8 +7,8 @@
 <p>
 
 <p align="center">
-    <img src="https://github.com/cybersecsi/robodroid/actions/workflows/release.yml/badge.svg"/>
-    <img src="https://github.com/cybersecsi/robodroid/actions/workflows/publish.yml/badge.svg"/>
+    <img src="https://github.com/cybersecsi/robodroid/actions/workflows/release.yaml/badge.svg"/>
+    <img src="https://github.com/cybersecsi/robodroid/actions/workflows/publish.yaml/badge.svg"/>
   <a href="https://github.com/cybersecsi/robodroid/blob/main/README.md"><img src="https://img.shields.io/badge/Documentation-complete-green.svg?style=flat"></a>
   <a href="https://github.com/cybersecsi/robodroid/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-GPL3-blue.svg"></a>
 </p>
@@ -188,4 +188,4 @@ Developed by Angelo Delicato [@SecSI](https://secsi.io)
 
 ## 🪪 License
 
-_robodroid_ is released under the [GPL-3.0 LICENSE](https://github.com/cybersecsi/robodroid/blob/main/LICENSE)
+_RoboDroid_ is released under the [GPL-3.0 LICENSE](https://github.com/cybersecsi/robodroid/blob/main/LICENSE)
