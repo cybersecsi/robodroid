@@ -82,7 +82,7 @@ We made a brief demo video that shows RoboDroid in action with a template that d
 3. Opens the link with the Firefox Android (Fenix) application, downloads the linked file and installs it
 
 This workflow simulates a common phishing attack (although simplified) that can be used in a next-generation Cyber Range involving Android Mobile Devices.
-[![RoboDroid Introduction](http://img.youtube.com/vi/YOUTUBE_VIDEO_ID_HERE/0.jpg)](http://www.youtube.com/watch?v=YOUTUBE_VIDEO_ID_HERE "RoboDroid Introduction")
+[![RoboDroid Introduction](http://img.youtube.com/vi/jn8OQZyNLD4/0.jpg)](http://www.youtube.com/watch?v=jn8OQZyNLD4 "RoboDroid Introduction")
 
 
 ## Credits
