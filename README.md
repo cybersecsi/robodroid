@@ -84,7 +84,7 @@ We made a brief demo video that shows RoboDroid in action with a template that d
 
 This workflow simulates a common phishing attack (although simplified) that can be used in a next-generation Cyber Range involving Android Mobile Devices.
 
-[![RoboDroid Introduction](http://img.youtube.com/vi/jn8OQZyNLD4/0.jpg)](http://www.youtube.com/watch?v=jn8OQZyNLD4 "RoboDroid Introduction")
+[![RoboDroid Introduction](https://img.youtube.com/vi/jn8OQZyNLD4/maxresdefault.jpg)](http://www.youtube.com/watch?v=jn8OQZyNLD4 "RoboDroid Introduction")
 
 
 ## Roadmap
