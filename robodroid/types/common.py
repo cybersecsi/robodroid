@@ -61,3 +61,7 @@ class BehaviorResult(TypedDict):
     status: BehaviorResultTypeValue
     msg: str
     outputs: NotRequired[str]
+
+
+class DbMetadata(TypedDict):
+    last_library_update: int  # UNIX timestamp of the last library update

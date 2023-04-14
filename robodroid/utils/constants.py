@@ -6,12 +6,22 @@ from pathlib import Path
 FILE_PATH = Path(__file__)
 MAIN_DIR = FILE_PATH.parent.parent.absolute()  # Root path of the project
 
+# Folders
 DEFAULT_BASE_PATH = ".RoboDroid"
 LIBRARY_FOLDER = "library"
+DB_FOLDER = "db"
 BEHAVIORS_FOLDER = "behaviors"
-FRIDA_AGENT_FILE = "robodroid-library.js"
 CONFIGS_FOLDER = "configs"
 FRIDA_FOLDER = "frida"
+
+# Files
+FRIDA_AGENT_FILE = "robodroid-library.js"
+DB_METADATA_FILE = "metadata.json"
+
+# Template files
+TEMPLATE_DB_METADATA_FILE = f"{MAIN_DIR}/config/{DB_METADATA_FILE}"
+
+# Links
 ROBODROID_GIT_REPO = "https://github.com/cybersecsi/robodroid"
 ROBODROID_LIBRARY_GIT_REPO = "https://github.com/cybersecsi/robodroid-library"
 

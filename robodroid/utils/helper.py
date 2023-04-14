@@ -3,10 +3,13 @@
 """
 
 import os
+import shutil
 import pathlib
 import functools
 import threading
 import tarfile
+import json
+import time
 import requests
 from typing import List, Dict, Tuple, Callable, Any, cast
 from yaml import safe_load, YAMLError
@@ -18,8 +21,11 @@ from robodroid.utils.constants import (
     LIBRARY_FOLDER,
     BEHAVIORS_FOLDER,
     CONFIGS_FOLDER,
+    DB_FOLDER,
     FRIDA_FOLDER,
     FRIDA_AGENT_FILE,
+    DB_METADATA_FILE,
+    TEMPLATE_DB_METADATA_FILE,
 )
 
 
@@ -96,6 +102,16 @@ def robodroid_frida_folder() -> str:
     return os.path.join(robodroid_folder(), FRIDA_FOLDER)
 
 
+def robodroid_db_folder() -> str:
+    """
+    Get the RoboDroid db folder
+
+    Returns:
+        robodroid_db_folder (str): the path to the RoboDroid db folder
+    """
+    return os.path.join(robodroid_folder(), DB_FOLDER)
+
+
 def create_folder_if_missing(path: str) -> None:
     """
     Create a folder if not exists
@@ -142,8 +158,27 @@ def download_robodroid_library() -> None:
         with tarfile.open(fname) as robodroid_library_archive_file:
             robodroid_library_archive_file.extractall(download_folder)
             os.unlink(fname)
+        set_last_library_update()
     else:
         logger.error("Error while downloading 'robodroid-library'")
+
+
+def set_last_library_update() -> None:
+    """
+    Write the current timestamp in the $HOME/.RoboDroid/db/metadata.json file ('last_library_update' key)
+    """
+    metadata_file_path = os.path.join(robodroid_db_folder(), DB_METADATA_FILE)
+
+    # Copy file from template if missing
+    if not os.path.isfile(metadata_file_path):
+        logger.error(f"Missing file '{metadata_file_path}', copying it from template")
+        shutil.copyfile(TEMPLATE_DB_METADATA_FILE, metadata_file_path)
+
+    with open(metadata_file_path, "r+", encoding="utf-8") as metadata_file:
+        db_metadata: types.common.DbMetadata = json.load(metadata_file)
+        db_metadata["last_library_update"] = int(time.time())
+        metadata_file.seek(0)
+        json.dump(db_metadata, metadata_file)
 
 
 def init_folders() -> None:
@@ -153,6 +188,7 @@ def init_folders() -> None:
     create_folder_if_missing(robodroid_folder())
     create_folder_if_missing(robodroid_configs_folder())
     create_folder_if_missing(robodroid_frida_folder())
+    create_folder_if_missing(robodroid_db_folder())
     if not os.path.isdir(robodroid_lib_folder()):
         os.makedirs(robodroid_lib_folder())
         download_robodroid_library()
