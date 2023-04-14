@@ -32,10 +32,10 @@ workflow:
     type: frida
     inputs:
       - id: link
-        value: robodroid.get-link.outputs.link
+        value: robodroid.outputs.get-link.link
   - id: install-apk
     name: adb-apk-install-from-device
     type: adb
     inputs:
       - id: path
-        value: robodroid.open-and-download.outputs.filePath
+        value: robodroid.outputs.open-and-downloa.filePath

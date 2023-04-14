@@ -18,6 +18,7 @@ RoboDroid is a cutting-edge software tool designed to simplify the process of ma
 
 - [Context](#context)
 - [Overview](#overview)
+- [How It Works](#how-it-works)
 - [Install](#install)
   - [RoboDroid Library](#robodroid-library)
 - [Usage](#usage)
@@ -31,10 +32,27 @@ Mobile devices have become ubiquitous in today's world. People use smartphones f
 
 However, the security of mobile devices is often overlooked in cybersecurity training and testing environments. This can leave organizations vulnerable to attacks that exploit the weaknesses of mobile devices. Therefore, it is important to introduce mobile components in next-generation cyber-ranges to adapt to the current world that is more and more smartphone-addicted.
 
-**RoboDroid** is designed to help fill this gap by providing a set of tools that can simulate human-like smartphone behavior. The pre-defined behaviors are created using Frida and are managed in the [RoboDroid Library](https://github.com/cybersecsi/robodroid-library) repository.
+**RoboDroid** is designed to help fill this gap by providing a set of tools that can simulate human-like smartphone behavior. The pre-defined behaviors are created using [Frida](https://frida.re) and are managed in the [RoboDroid Library](https://github.com/cybersecsi/robodroid-library) repository.
 
 ## Overview
 
+The impact of mobiles systems on security incidents is growing more and more everyday, because of that many organizations need to be fully prepared to avoid/respond to those kind of threats. Currently the most common way to fulfill this requirement is to use a Cyber Range; the problem is that there is still a gap to fill between the need of the organizations/countries to prepare against mobile security threats and the features provided by current-generation Cyber Ranges. The current gap hinders Cyber Range users from achieving complete readiness for situations that involve mobile systems, which are becoming more widespread.
+
+The goal of **RoboDroid** is to fill this gap by providing a simple way to introduce mobile components in Cyber Range environments. Its main objective is to provide users with an easy-to-use platform that allows them to simulate human-like behaviors and actions on mobile devices.
+
+RoboDroid leverages [Frida](https://frida.re) technology to run behaviors that are specific to applications, while using ``ADB`` for all other operations. This powerful combination enables users to create workflows of preset behaviors that can simulate a mobile user's actions.
+
+One example of a workflow that can be used in a cyber range environment involves simulating a mobile user receiving a phishing email, clicking on the link contained in the email, and subsequently downloading a malware. The workflow can be broken down into the following steps:
+
+1. The user receives a phishing email containing a link that appears legitimate.
+2. The user clicks on the link, which redirects them to a malicious website.
+3. The website prompts the user to download an app, which they do.
+4. The app is installed on the user's device and begins executing malicious code.
+5. The malware gains access to sensitive data on the device, such as passwords, credit card information, and other personal details.
+
+By creating and running workflows like this, users can simulate realistic cyber attack scenarios and test their defenses against a wide range of threats. This helps to ensure that systems and networks are well-protected against potential vulnerabilities, and that users are prepared to respond effectively in the event of an attack.
+
+## How It Works
 TODO
 
 ## Install
@@ -73,6 +91,53 @@ This will display the help for the tool:
 │ --log-mode          [silent|normal|debug]  Set logging mode [default: normal]                                                   │
 │ --help      -h                             Show this message and exit.                                                          │
 ╰─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+```
+
+Before actually running it you need to provide at least one valid config file that **must** be placed under ``$HOME/.RoboDroid/config`` in ``yaml`` format.
+This config file defines all the steps of the workflow that will be executed, you can take a look at the ``examples`` folder for some valid configurations. The following table provides a description of the fields used in the config file:
+
+| **Key**  | **Required** | **Description**                                      |
+|----------|--------------|------------------------------------------------------|
+| id       | True         | The ID of the workflow                               |
+| init     | False        | The init section, contains the initial setup actions |
+| workflow | True         | The actual workflow to be executed                   |
+
+In the ``init`` section you may set the APKs that must be installed and the packages that must be cleaned up (storage and cache) before running the actual workflow. The structure of this section is the following:
+
+| **Key** | **Required** | **Description**                                  |
+|---------|--------------|--------------------------------------------------|
+| install | True         | List of paths of APKs to install                 |
+| clear   | False        | List of packages to clean up (storage and cache) |
+
+In the ``worfklow`` section there is the actual workflow. It is a **list** of elements that are called **steps** which are meant to be executed **sequentially**. Every *step* has the following structure:
+
+| **Key** | **Required** | **Description**                                                             |
+|---------|--------------|-----------------------------------------------------------------------------|
+| id      | True         | ID of the step                                                              |
+| name    | True         | The name of the behavior (in the RoboDroid Library or in the commands list) |
+| type    | True         | The type of the behavior ("frida-behavior", "adb")                          |
+| inputs  | False        | The list of inputs                                                          |
+
+Finally every input has the following structure:
+
+| **Key** | **Required** | **Description**                   |
+|---------|--------------|-----------------------------------|
+| id      | True         | ID of the input                   |
+| value   | True         | The value to assign to this input |
+
+The last thing to say is that you can **also use outputs from previous steps as input to the next ones**. To do that you can set the value of an input by using the **reserved** prefix ``robodroid.outputs`` followed by the ID of the step and the ID of the output, for example:
+```
+...
+  - id: get-link
+    name: k9-mail-refresh-and-get-link
+    type: frida
+  - id: open-and-download
+    name: firefox-android-open-link-and-download
+    type: frida
+    inputs:
+      - id: link
+        value: robodroid.outputs.get-link.link
+...
 ```
 
 ## Demo
