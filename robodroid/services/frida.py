@@ -7,7 +7,7 @@ import lzma
 import requests
 import frida
 import humps
-from tenacity import retry, stop_after_attempt
+from tenacity import retry, stop_after_attempt, wait_fixed
 from robodroid import types
 from robodroid.services import adb
 from robodroid.utils import helper, logger
@@ -97,9 +97,10 @@ class RoboDroidFrida:
         self.adb.push(frida_server_bin, "/data/local/tmp/frida-server", 755)
         self.adb.shell_cmd("killall frida-server", False)
         self.adb.thread_shell_cmd("/data/local/tmp/frida-server")
+        self.adb.wait_for_process_up("frida-server")
         logger.success("Frida server correctly started")
 
-    @retry(stop=stop_after_attempt(10))
+    @retry(stop=stop_after_attempt(10), wait=wait_fixed(1))
     def spawn_and_attach(self, package_name: str) -> typing.Tuple[int, frida.core.Session]:
         pid = self.device.spawn(package_name)
         self.device.resume(pid)

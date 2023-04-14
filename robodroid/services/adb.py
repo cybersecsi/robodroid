@@ -1,5 +1,6 @@
 import threading
 import queue
+import time
 from typing import List, Any, Callable, cast
 from functools import wraps
 from ppadb.client import Client as AdbClient
@@ -109,6 +110,27 @@ class RoboDroidAdb:
         # print('Waiting for the thread...')
         # exec_thread.join()
         # print('Thread completed')
+
+    @validate_connection(None)
+    def wait_for_process_up(self, process_name: str) -> None:
+        cmd_output_queue: queue.Queue = queue.Queue()
+
+        def handler(connection: Any) -> None:
+            data = connection.read(1024)
+            connection.close()
+            result = data.decode("utf-8") if data else None
+            cmd_output_queue.put(result)
+
+        while True:
+            self.device.shell(f"pidof {process_name}", handler)
+            result: str = cmd_output_queue.get()
+            if result != None and result.strip() != 1:
+                break
+            else:
+                logger.info(
+                    f"Process {process_name} is not running yet, waiting for 2 seconds before retrying..."
+                )
+                time.sleep(2)
 
     @validate_connection(False)
     def is_root_enabled(self) -> bool:
