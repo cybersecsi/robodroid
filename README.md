@@ -48,7 +48,8 @@ One example of a workflow that can be used in a cyber range environment involves
 
 The following picture summarizes it:
 
-![Kill Chain Example](https://raw.githubusercontent.com/cybersecsi/robodroid/main/docs/kill-chain-example.png)
+![Kill Chain Example](https://raw.githubusercontent.com/cybersecsi/robodroid/main/docs/kill-chain-example.png#gh-light-mode-only)
+![Kill Chain Example](https://raw.githubusercontent.com/cybersecsi/robodroid/main/docs/kill-chain-example-dark.png#gh-dark-mode-only)
 
 The workflow can be broken down into the following steps:
 
@@ -61,7 +62,8 @@ The workflow can be broken down into the following steps:
 By creating and running workflows like this, users can simulate realistic cyber attack scenarios and test their defenses against a wide range of threats. This helps to ensure that systems and networks are well-protected against potential vulnerabilities, and that users are prepared to respond effectively in the event of an attack.
 
 ## 📚 How It Works
-![How RoboDroid Works](https://raw.githubusercontent.com/cybersecsi/robodroid/main/docs/how-it-works.png)
+![How RoboDroid Works](https://raw.githubusercontent.com/cybersecsi/robodroid/main/docs/how-it-works.png#gh-light-mode-only)
+![How RoboDroid Works](https://raw.githubusercontent.com/cybersecsi/robodroid/main/docs/how-it-works-dark.png#gh-dark-mode-only)
 
 ### Interaction with the Frida Agent
 
