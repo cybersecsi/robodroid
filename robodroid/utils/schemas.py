@@ -113,3 +113,19 @@ workflow_schema = {
         },
     },
 }
+
+managed_config_schema = {
+    "device": {
+        "type": "dict",
+        "required": True,
+        "schema": {
+            "host": {"type": "string", "required": True},
+            "adb_port": {"type": "string", "required": True},
+            "device_name": {"type": "string", "required": True},
+        },
+    },
+    "workfow": {
+        "type": "string",
+        "required": True,
+    },
+}
