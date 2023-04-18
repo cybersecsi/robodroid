@@ -24,4 +24,4 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: cybersecsi/robodroid:${{github.ref_name}},cybersecsi/robodroid:latest
+          tags: secsi/robodroid:${{github.ref_name}},secsi/robodroid:latest
