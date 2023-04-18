@@ -5,7 +5,7 @@ init:
     - <path_to>/fenix.apk
   clear: []
 
-workflow:
+behaviors:
   - id: open-and-download
     name: firefox-android-open-and-download
     type: frida-behavior

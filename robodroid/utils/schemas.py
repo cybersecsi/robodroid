@@ -63,7 +63,7 @@ lib_config_schema = {
     },
 }
 
-config_schema = {
+workflow_schema = {
     "id": {
         "type": "string",
         "required": True,
@@ -82,7 +82,7 @@ config_schema = {
             },
         },
     },
-    "workflow": {
+    "behaviors": {
         "type": "list",
         "required": True,
         "schema": {
@@ -111,5 +111,21 @@ config_schema = {
                 },
             },
         },
+    },
+}
+
+managed_config_schema = {
+    "device": {
+        "type": "dict",
+        "required": True,
+        "schema": {
+            "adb_host": {"type": "string", "required": True},
+            "adb_port": {"type": "number", "required": True},
+            "device_name": {"type": "string", "required": True},
+        },
+    },
+    "workflow": {
+        "type": "string",
+        "required": True,
     },
 }

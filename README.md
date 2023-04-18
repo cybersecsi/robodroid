@@ -25,6 +25,9 @@ RoboDroid is a cutting-edge software tool designed to simplify the process of ma
 - [🔌 Install](#-install)
   - [RoboDroid Library](#robodroid-library)
 - [ℹ️ Usage](#ℹ️-usage)
+  - [``run`` command](#run-command)
+  - [ENV Variables](#env-variables)
+  - [Run in Docker](#run-in-docker)
 - [🚀 Demo](#-demo)
 - [🚧 Roadmap](#-roadmap)
 - [📚 Credits](#-credits)
@@ -95,33 +98,90 @@ robodroid --help
 This will display the help for the tool:
 
 ```
-    ███████╗███████╗ ██████╗███████╗██╗
-    ██╔════╝██╔════╝██╔════╝██╔════╝██║
-    ███████╗█████╗  ██║     ███████╗██║
-    ╚════██║██╔══╝  ██║     ╚════██║██║
-    ███████║███████╗╚██████╗███████║██║
-    ╚══════╝╚══════╝ ╚═════╝╚══════╝╚═╝
-    RoboDroid v0.0.1
+              &&&&&&&&&&&
+           &&&&         &&&&
+         &&&               &&&
+      (&&&&   &&&&   &&&&   &&&)&
+      &(&&&&               &&&&)&
+          &&&&           &&&&
+             &&&&&&&&&&&&&
+       &&&  &&&&&&&&&&&&&&&  &&&
+      &&&&  &&&&&&&&&&&&&&&  &&&&
+      &&&&  &&&&&&&&&&&&&&&  &&&&
+      &&&&  &&&&&&&&&&&&&&&  &&&&
+      &&&&  &&&&&&&&&&&&&&&  &&&&
+      &&&&  &&&&&&&&&&&&&&&  &&&&
+              &&&&&&&&&&&
+               &&&& &&&&
+               &&&& &&&&
+            RoboDroid v0.0.2
 
-
- Usage: robodroid [OPTIONS]
+ Usage: robodroid [OPTIONS] COMMAND [ARGS]...
 
  Manage and deploy Android machines with pre-defined behaviors for Cyber Range environments
 
-╭─ Options ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
-│ --log-mode          [silent|normal|debug]  Set logging mode [default: normal]                                                   │
-│ --help      -h                             Show this message and exit.                                                          │
-╰─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭─ Options ──────────────────────────────────────────────────────────────────────────────────╮
+│ --help  -h        Show this message and exit.                                              │
+╰────────────────────────────────────────────────────────────────────────────────────────────╯
+╭─ Commands ─────────────────────────────────────────────────────────────────────────────────╮
+│ run               Run RoboDroid.                                                           │
+| update-library    Update the RoboDroid Library to the latest version                       |
+│ version           Print the current version and exit.                                      │
+╰────────────────────────────────────────────────────────────────────────────────────────────╯
+
 ```
 
-Before actually running it you need to provide at least one valid config file that **must** be placed under ``$HOME/.RoboDroid/config`` in ``yaml`` format.
-This config file defines all the steps of the workflow that will be executed, you can take a look at the ``examples`` folder for some valid configurations. The following table provides a description of the fields used in the config file:
+### ``run`` command
+You can run ``robodroid`` in two different modes:
+- Interactive (``default``)
+- Managed
 
-| **Key**  | **Required** | **Description**                                      |
-|----------|--------------|------------------------------------------------------|
-| id       | True         | The ID of the workflow                               |
-| init     | False        | The init section, contains the initial setup actions |
-| workflow | True         | The actual workflow to be executed                   |
+```
+              &&&&&&&&&&&
+           &&&&         &&&&
+         &&&               &&&
+      (&&&&   &&&&   &&&&   &&&)&
+      &(&&&&               &&&&)&
+          &&&&           &&&&
+             &&&&&&&&&&&&&
+       &&&  &&&&&&&&&&&&&&&  &&&
+      &&&&  &&&&&&&&&&&&&&&  &&&&
+      &&&&  &&&&&&&&&&&&&&&  &&&&
+      &&&&  &&&&&&&&&&&&&&&  &&&&
+      &&&&  &&&&&&&&&&&&&&&  &&&&
+      &&&&  &&&&&&&&&&&&&&&  &&&&
+              &&&&&&&&&&&
+               &&&& &&&&
+               &&&& &&&&
+            RoboDroid v0.0.2
+
+ Usage: robodroid run [OPTIONS]
+
+ Run RoboDroid.
+
+╭─ Options ───────────────────────────────────────────────────────────────────────────╮
+│ --log-mode          [silent|normal|debug]  Set logging mode [default: normal]       │
+│ --mode      -m      [interactive|managed]  Set run mode [default: interactive]      │
+│ --config    -c      TEXT                   Name of the managed config file to load  │
+│ --help      -h                             Show this message and exit.              │
+╰─────────────────────────────────────────────────────────────────────────────────────╯
+```
+
+In the interactive mode there is a prompt that lets the user select the ``ADB`` host, the port and the device to use while the **managed** mode uses a config file that **MUST BE PLACED** under ``$HOME/.RoboDroid/config`` in ``yaml`` format. The **managed** mode is the perfect mode to use while setting up a lab/environment without the need of user input/configuration.
+The following table provides a description of the fields used in the **config** file:
+| **Key**   | **Required** | **Description**                                      |
+|-----------|--------------|------------------------------------------------------|
+| device    | True         | Info about the device to use                         |
+| workflow  | True         | The workflow to use (name of the file)               |
+
+Before actually running it you need to provide at least one valid workflow file that **must** be placed under ``$HOME/.RoboDroid/workflows`` in ``yaml`` format.
+This config file defines all the steps of the workflow that will be executed, you can take a look at the ``examples`` folder for some valid configurations. The following table provides a description of the fields used in the **workflow** file:
+
+| **Key**   | **Required** | **Description**                                      |
+|-----------|--------------|------------------------------------------------------|
+| id        | True         | The ID of the workflow                               |
+| init      | False        | The init section, contains the initial setup actions |
+| behaviors | True         | The list of behaviors to execute                     |
 
 In the ``init`` section you may set the APKs that must be installed and the packages that must be cleaned up (storage and cache) before running the actual workflow. The structure of this section is the following:
 
@@ -130,7 +190,7 @@ In the ``init`` section you may set the APKs that must be installed and the pack
 | install | True         | List of paths of APKs to install                 |
 | clear   | False        | List of packages to clean up (storage and cache) |
 
-In the ``worfklow`` section there is the actual workflow. It is a **list** of elements that are called **steps** which are meant to be executed **sequentially**. Every *step* has the following structure:
+In the ``behaviors`` section there is the actual workflow. It is a **list** of elements that are called **steps** which are meant to be executed **sequentially**. Every *step* has the following structure:
 
 | **Key** | **Required** | **Description**                                                             |
 |---------|--------------|-----------------------------------------------------------------------------|
@@ -161,6 +221,18 @@ The last thing to say is that you can **also use outputs from previous steps as 
 ...
 ```
 
+### ENV Variables
+
+The CLI options can also be set through env variables (especially useful when running inside Docker); the following table provides a list of the current env variables available:
+| **Key**                       | **Description**                                                           |
+|-------------------------------|---------------------------------------------------------------------------|
+| ROBODROID_LOG_MODE            | Log level of RoboDroid [silent|normal|debug]                              |
+| ROBODROID_RUN_MODE            | Run mode [interactive|managed]                                            |
+| ROBODROID_MANAGED_CONFIG_NAME | The name of the managed config to use (while running in ``managed`` mode) |
+
+### Run in Docker
+TODO
+
 ## 🚀 Demo
 
 We made a brief demo video that shows RoboDroid in action with a template that does the following:
@@ -179,7 +251,7 @@ This workflow simulates a common phishing attack (although simplified) that can 
 - [ ] Automatic deploy of ReDroid instance
 - [ ] Automatic deploy of Genymotion instance
 - [ ] Multi-device support
-- [ ] Interactive mode (without workflow config file)
+- [ ] ~~Interactive~~ Creative mode (without workflow file)
 - [ ] Continuous workflow mode (restart the whole workflow indefinitely until manually stopped)
 
 Of course we plan to add more and more behaviors in the [RoboDroid Library](https://github.com/cybersecsi/robodroid-library) and more and more ``adb`` commands in this repo. We also encourage every user to contribute to this projet and make it better!

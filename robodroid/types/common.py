@@ -34,27 +34,27 @@ class LibData(TypedDict):
     outputs: List[LibOutputs]
 
 
-class ConfigInit(TypedDict):
+class WorkflowInit(TypedDict):
     install: List[str]
     clear: List[str]
 
 
-class ConfigStepInput(TypedDict):
+class WorkflowStepInput(TypedDict):
     id: str
     value: str
 
 
-class ConfigStep(TypedDict):
+class WorkflowStep(TypedDict):
     id: str
     name: str
     type: WorkflowStepTypeValue
-    inputs: List[ConfigStepInput]
+    inputs: List[WorkflowStepInput]
 
 
-class ConfigData(TypedDict):
+class WorkflowData(TypedDict):
     id: str
-    init: NotRequired[ConfigInit]
-    workflow: List[ConfigStep]
+    init: NotRequired[WorkflowInit]
+    behaviors: List[WorkflowStep]
 
 
 class BehaviorResult(TypedDict):
@@ -64,4 +64,16 @@ class BehaviorResult(TypedDict):
 
 
 class DbMetadata(TypedDict):
+    library_version: str  # Current RoboDroid Library version
     last_library_update: int  # UNIX timestamp of the last library update
+
+
+class ManagedConfigDeviceData(TypedDict):
+    adb_host: str
+    adb_port: int
+    device_name: str
+
+
+class ManagedConfigData(TypedDict):
+    device: ManagedConfigDeviceData
+    workflow: str
