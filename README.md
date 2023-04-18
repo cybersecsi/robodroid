@@ -25,6 +25,7 @@ RoboDroid is a cutting-edge software tool designed to simplify the process of ma
 - [🔌 Install](#-install)
   - [RoboDroid Library](#robodroid-library)
 - [ℹ️ Usage](#ℹ️-usage)
+  - [``run`` command](#run-command)
 - [🚀 Demo](#-demo)
 - [🚧 Roadmap](#-roadmap)
 - [📚 Credits](#-credits)
@@ -95,27 +96,83 @@ robodroid --help
 This will display the help for the tool:
 
 ```
-    ███████╗███████╗ ██████╗███████╗██╗
-    ██╔════╝██╔════╝██╔════╝██╔════╝██║
-    ███████╗█████╗  ██║     ███████╗██║
-    ╚════██║██╔══╝  ██║     ╚════██║██║
-    ███████║███████╗╚██████╗███████║██║
-    ╚══════╝╚══════╝ ╚═════╝╚══════╝╚═╝
-    RoboDroid v0.0.1
+              &&&&&&&&&&&
+           &&&&         &&&&
+         &&&               &&&
+      (&&&&   &&&&   &&&&   &&&)&
+      &(&&&&               &&&&)&
+          &&&&           &&&&
+             &&&&&&&&&&&&&
+       &&&  &&&&&&&&&&&&&&&  &&&
+      &&&&  &&&&&&&&&&&&&&&  &&&&
+      &&&&  &&&&&&&&&&&&&&&  &&&&
+      &&&&  &&&&&&&&&&&&&&&  &&&&
+      &&&&  &&&&&&&&&&&&&&&  &&&&
+      &&&&  &&&&&&&&&&&&&&&  &&&&
+              &&&&&&&&&&&
+               &&&& &&&&
+               &&&& &&&&
+            RoboDroid v0.0.2
 
-
- Usage: robodroid [OPTIONS]
+ Usage: robodroid [OPTIONS] COMMAND [ARGS]...
 
  Manage and deploy Android machines with pre-defined behaviors for Cyber Range environments
 
-╭─ Options ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
-│ --log-mode          [silent|normal|debug]  Set logging mode [default: normal]                                                   │
-│ --help      -h                             Show this message and exit.                                                          │
-╰─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭─ Options ──────────────────────────────────────────────────────────────────────────────────╮
+│ --help  -h        Show this message and exit.                                              │
+╰────────────────────────────────────────────────────────────────────────────────────────────╯
+╭─ Commands ─────────────────────────────────────────────────────────────────────────────────╮
+│ run               Run RoboDroid.                                                           │
+│ version           Print the current version and exit.                                      │
+╰────────────────────────────────────────────────────────────────────────────────────────────╯
+
 ```
 
-Before actually running it you need to provide at least one valid config file that **must** be placed under ``$HOME/.RoboDroid/config`` in ``yaml`` format.
-This config file defines all the steps of the workflow that will be executed, you can take a look at the ``examples`` folder for some valid configurations. The following table provides a description of the fields used in the config file:
+### ``run`` command
+You can run ``robodroid`` in two different modes:
+- Interactive (``default``)
+- Managed
+
+```
+              &&&&&&&&&&&
+           &&&&         &&&&
+         &&&               &&&
+      (&&&&   &&&&   &&&&   &&&)&
+      &(&&&&               &&&&)&
+          &&&&           &&&&
+             &&&&&&&&&&&&&
+       &&&  &&&&&&&&&&&&&&&  &&&
+      &&&&  &&&&&&&&&&&&&&&  &&&&
+      &&&&  &&&&&&&&&&&&&&&  &&&&
+      &&&&  &&&&&&&&&&&&&&&  &&&&
+      &&&&  &&&&&&&&&&&&&&&  &&&&
+      &&&&  &&&&&&&&&&&&&&&  &&&&
+              &&&&&&&&&&&
+               &&&& &&&&
+               &&&& &&&&
+            RoboDroid v0.0.2
+
+ Usage: robodroid run [OPTIONS]
+
+ Run RoboDroid.
+
+╭─ Options ───────────────────────────────────────────────────────────────────────────╮
+│ --log-mode          [silent|normal|debug]  Set logging mode [default: normal]       │
+│ --mode      -m      [interactive|managed]  Set run mode [default: interactive]      │
+│ --config    -c      TEXT                   Name of the managed config file to load  │
+│ --help      -h                             Show this message and exit.              │
+╰─────────────────────────────────────────────────────────────────────────────────────╯
+```
+
+In the interactive mode there is a prompt that lets the user select the ``ADB`` host, the port and the device to use while the **managed** mode uses a config file that **MUST BE PLACED** under ``$HOME/.RoboDroid/config`` in ``yaml`` format. The **managed** mode is the perfect mode to use while setting up a lab/environment without the need of user input/configuration.
+The following table provides a description of the fields used in the **config** file:
+| **Key**   | **Required** | **Description**                                      |
+|-----------|--------------|------------------------------------------------------|
+| device    | True         | Info about the device to use                         |
+| workflow  | True         | The workflow to use (name of the file)               |
+
+Before actually running it you need to provide at least one valid workflow file that **must** be placed under ``$HOME/.RoboDroid/workflows`` in ``yaml`` format.
+This config file defines all the steps of the workflow that will be executed, you can take a look at the ``examples`` folder for some valid configurations. The following table provides a description of the fields used in the **workflow** file:
 
 | **Key**   | **Required** | **Description**                                      |
 |-----------|--------------|------------------------------------------------------|
@@ -179,7 +236,7 @@ This workflow simulates a common phishing attack (although simplified) that can 
 - [ ] Automatic deploy of ReDroid instance
 - [ ] Automatic deploy of Genymotion instance
 - [ ] Multi-device support
-- [ ] Interactive mode (without workflow config file)
+- [ ] ~~Interactive~~ Creative mode (without workflow file)
 - [ ] Continuous workflow mode (restart the whole workflow indefinitely until manually stopped)
 
 Of course we plan to add more and more behaviors in the [RoboDroid Library](https://github.com/cybersecsi/robodroid-library) and more and more ``adb`` commands in this repo. We also encourage every user to contribute to this projet and make it better!

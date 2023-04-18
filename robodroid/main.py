@@ -71,7 +71,7 @@ def run(
         "",
         "--config",
         "-c",
-        help="Path to the managed config file to load",
+        help="Name of the managed config file to load",
         callback=config_file_callback,
     ),
 ) -> None:
