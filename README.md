@@ -26,6 +26,8 @@ RoboDroid is a cutting-edge software tool designed to simplify the process of ma
   - [RoboDroid Library](#robodroid-library)
 - [ℹ️ Usage](#ℹ️-usage)
   - [``run`` command](#run-command)
+  - [ENV Variables](#env-variables)
+  - [Run in Docker](#run-in-docker)
 - [🚀 Demo](#-demo)
 - [🚧 Roadmap](#-roadmap)
 - [📚 Credits](#-credits)
@@ -217,6 +219,18 @@ The last thing to say is that you can **also use outputs from previous steps as 
         value: robodroid.outputs.get-link.link
 ...
 ```
+
+### ENV Variables
+
+The CLI options can also be set through env variables (especially useful when running inside Docker); the following table provides a list of the current env variables available:
+| **Key**                       | **Description**                                                           |
+|-------------------------------|---------------------------------------------------------------------------|
+| ROBODROID_LOG_MODE            | Log level of RoboDroid [silent|normal|debug]                              |
+| ROBODROID_RUN_MODE            | Run mode [interactive|managed]                                            |
+| ROBODROID_MANAGED_CONFIG_NAME | The name of the managed config to use (while running in ``managed`` mode) |
+
+### Run in Docker
+TODO
 
 ## 🚀 Demo
 
