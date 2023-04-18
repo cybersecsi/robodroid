@@ -9,8 +9,10 @@
 <p align="center">
     <img src="https://github.com/cybersecsi/robodroid/actions/workflows/release.yaml/badge.svg"/>
     <img src="https://github.com/cybersecsi/robodroid/actions/workflows/publish.yaml/badge.svg"/>
-  <a href="https://github.com/cybersecsi/robodroid/blob/main/README.md"><img src="https://img.shields.io/badge/Documentation-complete-green.svg?style=flat"></a>
-  <a href="https://github.com/cybersecsi/robodroid/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-GPL3-blue.svg"></a>
+    <img src="https://github.com/cybersecsi/robodroid/actions/workflows/docker.yaml/badge.svg"/>
+    <a href="https://pypi.python.org/pypi/robodroid"><img src="https://badge.fury.io/py/robodroid.svg"></a>
+    <a href="https://github.com/cybersecsi/robodroid/blob/main/README.md"><img src="https://img.shields.io/badge/Documentation-complete-green.svg?style=flat"></a>
+    <a href="https://github.com/cybersecsi/robodroid/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-GPL3-blue.svg"></a>
 </p>
 
 RoboDroid is a cutting-edge software tool designed to simplify the process of managing (and **very soon** also deploying) Android machines for usage in Cyber Range environments. With RoboDroid, users can easily set up and customize pre-defined behaviors for their Android machines, allowing them to create complex cyber attack scenarios and test their defenses against a wide range of threats.
