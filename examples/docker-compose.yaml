@@ -1,0 +1,15 @@
+version: "3.9"
+services:
+  robodroid:
+    image: cybersecsi/robodroid:latest
+    container_name: robodroid
+    command: run
+    volumes:
+      - <path_to_apks_folder>:/home/robodroid/.RoboDroid/apks
+      - <path_to_configs_folder>:/home/robodroid/.RoboDroid/configs
+      - <path_to_workflows_folder>:/home/robodroid/.RoboDroid/workflows
+    environment:
+      - ROBODROID_RUN_MODE=managed
+      - ROBODROID_MANAGED_CONFIG_NAME=docker.yaml
+    extra_hosts:
+      - "host.docker.internal:host-gateway" # To ensure the Docker container is able to reach the devices connected to the host
