@@ -68,7 +68,7 @@ class DbMetadata(TypedDict):
 
 
 class ManagedConfigDeviceData(TypedDict):
-    host: str
+    adb_host: str
     adb_port: int
     device_name: str
 

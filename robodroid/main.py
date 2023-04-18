@@ -12,7 +12,11 @@ from robodroid.workflow import manager
 from robodroid.utils import helper, logger
 from robodroid.types.enum import RunMode, LoggerMode, LoggerModeValue
 
-app = typer.Typer(add_completion=False, context_settings={"help_option_names": ["-h", "--help"]})
+app = typer.Typer(
+    add_completion=False,
+    context_settings={"help_option_names": ["-h", "--help"]},
+    help="Manage and deploy Android machines with pre-defined behaviors for Cyber Range environments",
+)
 
 
 def config_file_callback(ctx: typer.Context, value: str):
@@ -50,7 +54,7 @@ def interactive_mode() -> Tuple[adb.RoboDroidAdb, str, str]:
 def managed_mode(config_file: str):
     managed_config_data = helper.load_managed_config(config_file)
     adb_instance = adb.RoboDroidAdb(
-        managed_config_data["device"]["host"], managed_config_data["device"]["adb_port"]
+        managed_config_data["device"]["adb_host"], managed_config_data["device"]["adb_port"]
     )
     device_to_connect = managed_config_data["device"]["device_name"]
     workflow_to_run = managed_config_data["workflow"]

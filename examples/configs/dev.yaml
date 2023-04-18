@@ -1,6 +1,6 @@
 id: dev-managed-config
 device:
-  host: localhost
+  adb_host: localhost
   adb_port: 5037
   device_name: emulator-5554
 workflow: dev.yaml

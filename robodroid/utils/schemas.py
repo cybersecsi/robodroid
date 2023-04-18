@@ -119,7 +119,7 @@ managed_config_schema = {
         "type": "dict",
         "required": True,
         "schema": {
-            "host": {"type": "string", "required": True},
+            "adb_host": {"type": "string", "required": True},
             "adb_port": {"type": "number", "required": True},
             "device_name": {"type": "string", "required": True},
         },
