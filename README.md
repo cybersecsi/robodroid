@@ -125,6 +125,7 @@ This will display the help for the tool:
 ╰────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Commands ─────────────────────────────────────────────────────────────────────────────────╮
 │ run               Run RoboDroid.                                                           │
+| update-library    Update the RoboDroid Library to the latest version                       |
 │ version           Print the current version and exit.                                      │
 ╰────────────────────────────────────────────────────────────────────────────────────────────╯
 
