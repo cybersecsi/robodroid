@@ -64,6 +64,7 @@ class BehaviorResult(TypedDict):
 
 
 class DbMetadata(TypedDict):
+    library_version: str  # Current RoboDroid Library version
     last_library_update: int  # UNIX timestamp of the last library update
 
 

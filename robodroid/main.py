@@ -121,6 +121,22 @@ def run(
 
 
 @app.command()
+def update_library() -> None:
+    """
+    Update the RoboDroid Library to the latest version
+    """
+    logger.info("Updating the RoboDroid Library to the latest version...")
+    is_update_available = helper.check_library_update_available()
+    if is_update_available:
+        robodroid_lib_folder = helper.robodroid_lib_folder()
+        helper.delete_folder(robodroid_lib_folder)
+        helper.create_folder_if_missing(helper.robodroid_lib_folder())
+        helper.download_robodroid_library()
+    else:
+        logger.success("Your version is already the latest one")
+
+
+@app.command()
 def version() -> None:
     """
     Print the current version and exit.

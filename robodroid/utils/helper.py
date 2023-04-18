@@ -145,6 +145,20 @@ def create_folder_if_missing(path: str) -> None:
         os.makedirs(path)
 
 
+def delete_folder(path: str) -> None:
+    """
+    Delete a folder
+
+    Parameters:
+        path (str): the directory to remove
+    """
+    if os.path.isdir(path):
+        logger.info(f"Deleting folder '{path}'")
+        shutil.rmtree(path)
+    else:
+        logger.error(f"'{path}' is missing or is not a dir")
+
+
 def get_latest_github_release() -> Tuple[str, str]:
     GITHUB_API = {
         "base": "https://api.github.com/repos",
@@ -166,7 +180,7 @@ def download_robodroid_library() -> None:
     Download the RoboDroid Frida Library from https://github.com/cybersecsi/robodroid-library
     """
 
-    download_url, _ = get_latest_github_release()
+    download_url, version = get_latest_github_release()
     download_folder = robodroid_lib_folder()
     logger.info(f"Downloading robodroid-library from '{download_url}'")
     req = requests.get(download_url, stream=True)
@@ -179,12 +193,12 @@ def download_robodroid_library() -> None:
         with tarfile.open(fname) as robodroid_library_archive_file:
             robodroid_library_archive_file.extractall(download_folder)
             os.unlink(fname)
-        set_last_library_update()
+        set_last_library_update(version)
     else:
         logger.error("Error while downloading 'robodroid-library'")
 
 
-def set_last_library_update() -> None:
+def set_last_library_update(library_version: str) -> None:
     """
     Write the current timestamp in the $HOME/.RoboDroid/db/metadata.json file ('last_library_update' key)
     """
@@ -197,9 +211,22 @@ def set_last_library_update() -> None:
 
     with open(metadata_file_path, "r+", encoding="utf-8") as metadata_file:
         db_metadata: types.common.DbMetadata = json.load(metadata_file)
+        db_metadata["library_version"] = library_version
         db_metadata["last_library_update"] = int(time.time())
         metadata_file.seek(0)
         json.dump(db_metadata, metadata_file)
+
+
+def check_library_update_available() -> bool:
+    """
+    Check if there is a newer release of the RoboDroid Library
+    """
+    metadata_file_path = os.path.join(robodroid_db_folder(), DB_METADATA_FILE)
+    with open(metadata_file_path, "r+", encoding="utf-8") as metadata_file:
+        db_metadata: types.common.DbMetadata = json.load(metadata_file)
+        current_version = db_metadata["library_version"]
+    _, latest_version = get_latest_github_release()
+    return latest_version != current_version
 
 
 def init_folders() -> None:
