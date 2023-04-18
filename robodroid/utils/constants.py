@@ -8,11 +8,13 @@ MAIN_DIR = FILE_PATH.parent.parent.absolute()  # Root path of the project
 
 # Folders
 DEFAULT_BASE_PATH = ".RoboDroid"
-LIBRARY_FOLDER = "library"
-DB_FOLDER = "db"
-BEHAVIORS_FOLDER = "behaviors"
+DB_FOLDER = "db"  # Some files that act like a db (for updates and so forth)
+LIBRARY_FOLDER = "library"  # The release of 'robodroid-library'
+BEHAVIORS_FOLDER = "behaviors"  # Subfolder of 'robodroid-library' that contains the behaviors
+WORKFLOWS_FOLDER = "workflows"  # Where the user should put the workflow files
+# Where the user should put the config files (only to run in 'managed mode', which is non-interactive)
 CONFIGS_FOLDER = "configs"
-FRIDA_FOLDER = "frida"
+FRIDA_FOLDER = "frida"  # Where the frida binaries are downloaded
 
 # Files
 FRIDA_AGENT_FILE = "robodroid-library.js"

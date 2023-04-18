@@ -10,8 +10,8 @@ class RoboDroidWorkflowManager:
     A class for managing a workflow
     """
 
-    def __init__(self, config_data: types.common.ConfigData, adb_instance: adb.RoboDroidAdb):
-        self.config_data = config_data
+    def __init__(self, workflow_data: types.common.WorkflowData, adb_instance: adb.RoboDroidAdb):
+        self.workflow_data = workflow_data
         self.adb_instance = adb_instance
         is_root_enabled = self.adb_instance.is_root_enabled()
         if not is_root_enabled:
@@ -22,17 +22,17 @@ class RoboDroidWorkflowManager:
 
     def _run_init(self) -> None:
         # Install packages
-        if not "init" in self.config_data:
+        if not "init" in self.workflow_data:
             return
 
-        for apk in self.config_data["init"]["install"]:
+        for apk in self.workflow_data["init"]["install"]:
             logger.info(f"Installing app from '{apk}'")
             self.adb_instance.install(apk)
-        for package_name in self.config_data["init"]["clear"]:
+        for package_name in self.workflow_data["init"]["clear"]:
             logger.info(f"Cleaning package '{package_name}'")
             self.adb_instance.shell_cmd(f"pm clear {package_name}", False)
 
-    def _run_frida_behavior(self, behavior: types.common.ConfigStep) -> None:
+    def _run_frida_behavior(self, behavior: types.common.WorkflowStep) -> None:
         while True:
             reserved_output = "robodroid.outputs."
             lib_name = behavior["name"]
@@ -67,7 +67,7 @@ class RoboDroidWorkflowManager:
             else:
                 logger.error("Behavior failed, starting over")
 
-    def _run_command(self, step: types.common.ConfigStep) -> None:
+    def _run_command(self, step: types.common.WorkflowStep) -> None:
         command_name = step["name"]
         command_type = step["type"]
         if not command_name in config.workflow_commands[command_type].keys():
@@ -96,7 +96,7 @@ class RoboDroidWorkflowManager:
 
         command_types = [types.enum.WorkflowStepType.ADB.value]
         # Run the actual workflow
-        for step in self.config_data["workflow"]:
+        for step in self.workflow_data["behaviors"]:
             if step["type"] == types.enum.WorkflowStepType.FRIDA:
                 self._run_frida_behavior(step)
             elif step["type"] in command_types:

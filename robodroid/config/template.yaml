@@ -1,4 +1,4 @@
-id: Config ID
+id: Workflow ID
 
 init:
   install:
@@ -6,7 +6,7 @@ init:
   clear:
     - Package to clean with "pm clear <package-name>"
 
-workflow:
+behaviors:
   - id: ID of the step in this workflow
     name: ID of the script in the RoboDroid library to execute (.e.g. k9-mail-account-setup)
     type: Type of the step (e.g. 'frida-behavior', 'adb')
