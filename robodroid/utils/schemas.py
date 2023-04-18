@@ -63,7 +63,7 @@ lib_config_schema = {
     },
 }
 
-config_schema = {
+workflow_schema = {
     "id": {
         "type": "string",
         "required": True,
@@ -82,7 +82,7 @@ config_schema = {
             },
         },
     },
-    "workflow": {
+    "behaviors": {
         "type": "list",
         "required": True,
         "schema": {

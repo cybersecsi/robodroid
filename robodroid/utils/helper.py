@@ -20,6 +20,7 @@ from robodroid.utils.constants import (
     DEFAULT_BASE_PATH,
     LIBRARY_FOLDER,
     BEHAVIORS_FOLDER,
+    WORKFLOWS_FOLDER,
     CONFIGS_FOLDER,
     DB_FOLDER,
     FRIDA_FOLDER,
@@ -80,6 +81,16 @@ def robodroid_behaviors_folder() -> str:
         robodroid_behaviors_folder (str): the path to the RoboDroid behaviors folder
     """
     return os.path.join(robodroid_lib_folder(), BEHAVIORS_FOLDER)
+
+
+def robodroid_workflows_folder() -> str:
+    """
+    Get the RoboDroid workflows folder
+
+    Returns:
+        robodroid_workflows_folder (str): the path to the RoboDroid workflows folder
+    """
+    return os.path.join(robodroid_folder(), WORKFLOWS_FOLDER)
 
 
 def robodroid_configs_folder() -> str:
@@ -186,6 +197,7 @@ def init_folders() -> None:
     Create the folders required to run RoboDroid
     """
     create_folder_if_missing(robodroid_folder())
+    create_folder_if_missing(robodroid_workflows_folder())
     create_folder_if_missing(robodroid_configs_folder())
     create_folder_if_missing(robodroid_frida_folder())
     create_folder_if_missing(robodroid_db_folder())
@@ -242,25 +254,25 @@ def is_lib_valid(lib_name: str) -> bool:
     return True
 
 
-def is_config_valid(config_name: str) -> bool:
+def is_workflow_valid(workflow_name: str) -> bool:
     """
-    Checks if a config file is valid
+    Checks if a workflow file is valid
 
     Parameters:
-        config_name (str): the name of the config in the configs folder
+        workflow_name (str): the name of the workflow in the workflows folder
 
     Returns:
-        is_valid (bool): whether the config is valid or not
+        is_valid (bool): whether the workflow is valid or not
     """
-    # Check if the YAML config file is valid
-    config_filepath = os.path.join(robodroid_configs_folder(), config_name)
-    with open(config_filepath, "r", encoding="utf-8") as config_file:
+    # Check if the YAML workflow file is valid
+    workflow_filepath = os.path.join(robodroid_workflows_folder(), workflow_name)
+    with open(workflow_filepath, "r", encoding="utf-8") as workflow_file:
         try:
-            config_yaml = safe_load(config_file)
-            logger.debug(config_yaml)
-            is_valid = validate_schema(schemas.config_schema, config_yaml)
+            workflow_yaml = safe_load(workflow_file)
+            logger.debug(workflow_yaml)
+            is_valid = validate_schema(schemas.workflow_schema, workflow_yaml)
             if not is_valid:
-                logger.debug(config_yaml)
+                logger.debug(workflow_yaml)
                 return False
         except YAMLError as exc:
             logger.error(str(exc))
@@ -285,22 +297,22 @@ def get_library() -> List[str]:
     return library
 
 
-def get_configs() -> List[str]:
+def get_workflows() -> List[str]:
     """
-    A function to get the configs based on the directory names in $HOME/.RoboDroid/configs
+    A function to get the workflows based on the directory names in $HOME/.RoboDroid/workflows
 
     Returns:
-        configs (List[str]): the RoboDroid configs (only valid elements)
+        workflows (List[str]): the RoboDroid workflows (only valid elements)
     """
-    configs_folder = robodroid_configs_folder()
-    configs = [
+    workflows_folder = robodroid_workflows_folder()
+    workflows = [
         f
-        for f in os.listdir(configs_folder)
-        if os.path.isfile(os.path.join(configs_folder, f)) and f.endswith(".yaml")
+        for f in os.listdir(workflows_folder)
+        if os.path.isfile(os.path.join(workflows_folder, f)) and f.endswith(".yaml")
     ]
-    configs = [c for c in configs if is_config_valid(c)]
-    configs.sort()
-    return configs
+    workflows = [c for c in workflows if is_workflow_valid(c)]
+    workflows.sort()
+    return workflows
 
 
 def get_lib_data(lib_name: str) -> types.common.LibData:
@@ -313,14 +325,14 @@ def get_lib_data(lib_name: str) -> types.common.LibData:
         return config_yaml
 
 
-def get_config_data(config_name: str) -> types.common.ConfigData:
-    if not is_config_valid(config_name):
-        logger.error("Invalid config!")
-        raise Exception("Invalid config")
-    config_filepath = os.path.join(robodroid_configs_folder(), config_name)
-    with open(config_filepath, "r", encoding="utf-8") as config_file:
-        config_yaml = cast(types.common.ConfigData, safe_load(config_file))
-        return config_yaml
+def get_workflow_data(workflow_name: str) -> types.common.WorkflowData:
+    if not is_workflow_valid(workflow_name):
+        logger.error("Invalid workflow!")
+        raise Exception("Invalid workflow")
+    workflow_filepath = os.path.join(robodroid_workflows_folder(), workflow_name)
+    with open(workflow_filepath, "r", encoding="utf-8") as workflow_file:
+        workflow_yaml = cast(types.common.WorkflowData, safe_load(workflow_file))
+        return workflow_yaml
 
 
 def get_frida_agent() -> str:
@@ -339,8 +351,6 @@ def get_frida_agent() -> str:
 
 
 # Using 'wrapt-timeout-decorator' instead of this
-
-
 def custom_timeout(timeout: int) -> Callable[..., Callable[..., Any]]:
     def decorator(func: Callable[..., Any]) -> Callable[..., Any]:
         @functools.wraps(func)

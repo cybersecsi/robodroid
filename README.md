@@ -117,11 +117,11 @@ This will display the help for the tool:
 Before actually running it you need to provide at least one valid config file that **must** be placed under ``$HOME/.RoboDroid/config`` in ``yaml`` format.
 This config file defines all the steps of the workflow that will be executed, you can take a look at the ``examples`` folder for some valid configurations. The following table provides a description of the fields used in the config file:
 
-| **Key**  | **Required** | **Description**                                      |
-|----------|--------------|------------------------------------------------------|
-| id       | True         | The ID of the workflow                               |
-| init     | False        | The init section, contains the initial setup actions |
-| workflow | True         | The actual workflow to be executed                   |
+| **Key**   | **Required** | **Description**                                      |
+|-----------|--------------|------------------------------------------------------|
+| id        | True         | The ID of the workflow                               |
+| init      | False        | The init section, contains the initial setup actions |
+| behaviors | True         | The list of behaviors to execute                     |
 
 In the ``init`` section you may set the APKs that must be installed and the packages that must be cleaned up (storage and cache) before running the actual workflow. The structure of this section is the following:
 
@@ -130,7 +130,7 @@ In the ``init`` section you may set the APKs that must be installed and the pack
 | install | True         | List of paths of APKs to install                 |
 | clear   | False        | List of packages to clean up (storage and cache) |
 
-In the ``worfklow`` section there is the actual workflow. It is a **list** of elements that are called **steps** which are meant to be executed **sequentially**. Every *step* has the following structure:
+In the ``behaviors`` section there is the actual workflow. It is a **list** of elements that are called **steps** which are meant to be executed **sequentially**. Every *step* has the following structure:
 
 | **Key** | **Required** | **Description**                                                             |
 |---------|--------------|-----------------------------------------------------------------------------|

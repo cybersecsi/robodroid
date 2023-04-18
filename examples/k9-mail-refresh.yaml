@@ -5,7 +5,7 @@ init:
     - <path_to>/k9.apk
   clear: []
 
-workflow:
+behaviors:
   - id: get-link
     name: k9-mail-refresh-and-get-link
     type: frida-behavior

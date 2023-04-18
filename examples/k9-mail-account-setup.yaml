@@ -6,7 +6,7 @@ init:
   clear:
     - com.fsck.k9
 
-workflow:
+behaviors:
   - id: setup
     name: k9-mail-account-setup
     type: frida-behavior

@@ -40,16 +40,16 @@ def run(
     ).ask()
     adb_instance.connect(device_to_connect)
 
-    # Select config to run
-    configs = helper.get_configs()
-    config_to_run = questionary.select(
-        "What config do yo want to run?",
-        choices=configs,
+    # Select workflow to run
+    workflows = helper.get_workflows()
+    workflow_to_run = questionary.select(
+        "What workflow do yo want to run?",
+        choices=workflows,
     ).ask()
-    config_data = helper.get_config_data(config_to_run)
+    workflow_data = helper.get_workflow_data(workflow_to_run)
 
     # Create the WorkflowManager
-    wf_manager = manager.RoboDroidWorkflowManager(config_data, adb_instance)
+    wf_manager = manager.RoboDroidWorkflowManager(workflow_data, adb_instance)
 
     # Start the workflow
     wf_manager.run()
