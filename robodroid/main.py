@@ -63,15 +63,28 @@ def managed_mode(config_file: str):
 
 @app.command()
 def run(
-    log_mode: LoggerMode = typer.Option(LoggerMode.NORMAL.value, help="Set logging mode"),
+    log_mode: LoggerMode = typer.Option(
+        LoggerMode.NORMAL.value,
+        help="Set logging mode",
+        envvar="ROBODROID_LOG_MODE",
+        show_envvar=False,
+    ),
     mode: RunMode = typer.Option(
-        RunMode.INTERACTIVE.value, "--mode", "-m", help="Set run mode", prompt=True
+        RunMode.INTERACTIVE.value,
+        "--mode",
+        "-m",
+        help="Set run mode",
+        envvar="ROBODROID_RUN_MODE",
+        show_envvar=False,
+        prompt=True,
     ),
     config_file: str = typer.Option(
         "",
         "--config",
         "-c",
         help="Name of the managed config file to load",
+        envvar="ROBODROID_MANAGED_CONFIG_NAME",
+        show_envvar=False,
         callback=config_file_callback,
     ),
 ) -> None:
