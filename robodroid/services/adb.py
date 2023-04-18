@@ -147,3 +147,7 @@ class RoboDroidAdb:
                 result = True
         self.device.wait_boot_complete()
         return result
+
+    @validate_connection(None)
+    def forward_frida_port(self) -> None:
+        self.device.forward(27042, 27042)  # Default frida port

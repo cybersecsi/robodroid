@@ -26,7 +26,8 @@ class RoboDroidFrida:
 
     def __init__(self, robodroidAdb: adb.RoboDroidAdb):
         self.adb = robodroidAdb
-        self.device = frida.get_usb_device()
+        frida.get_device_manager().add_remote_device(f"{robodroidAdb.host}:{robodroidAdb.port}")
+        self.device = frida.get_remote_device()
         self.queue: queue.Queue = queue.Queue()
 
     def get_download_fname(self, arch: str) -> str:
@@ -94,6 +95,7 @@ class RoboDroidFrida:
         frida_server_bin = self.get_frida_server_bin_path()
         if not self.is_frida_server_bin_available():
             self.download_frida_server()
+        self.adb.forward_frida_port()
         self.adb.push(frida_server_bin, "/data/local/tmp/frida-server", 755)
         self.adb.shell_cmd("killall frida-server", False)
         self.adb.thread_shell_cmd("/data/local/tmp/frida-server")
