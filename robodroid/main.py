@@ -63,7 +63,7 @@ def run(
     ),
 ) -> None:
     """
-    Run RoboDroid in interactive mode (user chooses device and workflow)
+    Run RoboDroid.
     """
     if log_mode == LoggerMode.SILENT.value:
         logger.bold("Silent mode on. From now on only errors will be printed.")
@@ -95,6 +95,14 @@ def run(
 
     # Start the workflow
     wf_manager.run()
+
+
+@app.command()
+def version() -> None:
+    """
+    Print the current version and exit.
+    """
+    print(f"RoboDroid v{__version__}")
 
 
 def main() -> None:
