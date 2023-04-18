@@ -254,18 +254,18 @@ def is_lib_valid(lib_name: str) -> bool:
     return True
 
 
-def is_workflow_valid(workflow_name: str) -> bool:
+def is_workflow_valid(workflow_filename: str) -> bool:
     """
     Checks if a workflow file is valid
 
     Parameters:
-        workflow_name (str): the name of the workflow in the workflows folder
+        workflow_filename (str): the name of the workflow file in the workflows folder
 
     Returns:
         is_valid (bool): whether the workflow is valid or not
     """
     # Check if the YAML workflow file is valid
-    workflow_filepath = os.path.join(robodroid_workflows_folder(), workflow_name)
+    workflow_filepath = os.path.join(robodroid_workflows_folder(), workflow_filename)
     with open(workflow_filepath, "r", encoding="utf-8") as workflow_file:
         try:
             workflow_yaml = safe_load(workflow_file)
@@ -273,6 +273,31 @@ def is_workflow_valid(workflow_name: str) -> bool:
             is_valid = validate_schema(schemas.workflow_schema, workflow_yaml)
             if not is_valid:
                 logger.debug(workflow_yaml)
+                return False
+        except YAMLError as exc:
+            logger.error(str(exc))
+    return True
+
+
+def is_managed_config_valid(managed_config_filename: str) -> bool:
+    """
+    Checks if a managed config file is valid
+
+    Parameters:
+        managed_config_filename (str): the name of the managed config file in the configs folder
+
+    Returns:
+        is_valid (bool): whether the managed config is valid or not
+    """
+    # Check if the YAML managed config file is valid
+    config_filepath = os.path.join(robodroid_configs_folder(), managed_config_filename)
+    with open(config_filepath, "r", encoding="utf-8") as config_file:
+        try:
+            config_yaml = safe_load(config_file)
+            logger.debug(config_yaml)
+            is_valid = validate_schema(schemas.managed_config_schema, config_yaml)
+            if not is_valid:
+                logger.debug(config_yaml)
                 return False
         except YAMLError as exc:
             logger.error(str(exc))
@@ -315,6 +340,34 @@ def get_workflows() -> List[str]:
     return workflows
 
 
+def get_managed_configs() -> List[str]:
+    """
+    A function to get the managed configs based on the directory names in $HOME/.RoboDroid/configs
+
+    Returns:
+        managed_configs (List[str]): the RoboDroid managed configs (only valid elements)
+    """
+    configs_folder = robodroid_configs_folder()
+    configs = [
+        f
+        for f in os.listdir(configs_folder)
+        if os.path.isfile(os.path.join(configs_folder, f)) and f.endswith(".yaml")
+    ]
+    configs = [c for c in configs if is_managed_config_valid(c)]
+    configs.sort()
+    return configs
+
+
+def load_managed_config(managed_config_name: str) -> types.common.ManagedConfigData:
+    if not managed_config_name in get_managed_configs():
+        logger.error("Invalid managed config")
+        raise Exception("Invalid managed config")
+    managed_config_filepath = os.path.join(robodroid_configs_folder(), managed_config_name)
+    with open(managed_config_filepath, "r", encoding="utf-8") as managed_config_file:
+        managed_config_yaml = cast(types.common.ManagedConfigData, safe_load(managed_config_file))
+        return managed_config_yaml
+
+
 def get_lib_data(lib_name: str) -> types.common.LibData:
     if not is_lib_valid(lib_name):
         logger.error("Invalid lib!")
@@ -325,7 +378,7 @@ def get_lib_data(lib_name: str) -> types.common.LibData:
         return config_yaml
 
 
-def get_workflow_data(workflow_name: str) -> types.common.WorkflowData:
+def load_workflow_data(workflow_name: str) -> types.common.WorkflowData:
     if not is_workflow_valid(workflow_name):
         logger.error("Invalid workflow!")
         raise Exception("Invalid workflow")

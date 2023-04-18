@@ -12,3 +12,8 @@ def test_get_library():
 def test_get_workflows():
     workflows = helper.get_workflows()
     assert len(workflows) == 4
+
+
+def test_get_managed_configs():
+    managed_configs = helper.get_managed_configs()
+    assert len(managed_configs) == 1

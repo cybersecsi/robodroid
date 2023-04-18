@@ -65,3 +65,14 @@ class BehaviorResult(TypedDict):
 
 class DbMetadata(TypedDict):
     last_library_update: int  # UNIX timestamp of the last library update
+
+
+class ManagedConfigDeviceData(TypedDict):
+    host: str
+    adb_port: int
+    device_name: str
+
+
+class ManagedConfigData(TypedDict):
+    device: ManagedConfigDeviceData
+    workflow: str

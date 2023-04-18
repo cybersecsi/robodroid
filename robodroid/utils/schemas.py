@@ -120,11 +120,11 @@ managed_config_schema = {
         "required": True,
         "schema": {
             "host": {"type": "string", "required": True},
-            "adb_port": {"type": "string", "required": True},
+            "adb_port": {"type": "number", "required": True},
             "device_name": {"type": "string", "required": True},
         },
     },
-    "workfow": {
+    "workflow": {
         "type": "string",
         "required": True,
     },

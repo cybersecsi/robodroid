@@ -24,7 +24,13 @@ def config_file_callback(ctx: typer.Context, value: str):
     return value
 
 
-def interactive_mode(adb_instance: adb.RoboDroidAdb) -> Tuple[str, str]:
+def interactive_mode() -> Tuple[adb.RoboDroidAdb, str, str]:
+    # Create ADB instance
+    adb_host = questionary.text("ADB Host", default="localhost").ask()
+    adb_port = questionary.text(
+        "ADB Port", default="5037", validate=lambda text: text.isnumeric()
+    ).ask()
+    adb_instance = adb.RoboDroidAdb(adb_host, int(adb_port))
     # Select device
     devices = [d.get_serial_no() for d in adb_instance.list_devices()]
     device_to_connect = questionary.select(
@@ -38,14 +44,17 @@ def interactive_mode(adb_instance: adb.RoboDroidAdb) -> Tuple[str, str]:
         "What workflow do yo want to run?",
         choices=workflows,
     ).ask()
-    return device_to_connect, workflow_to_run
+    return adb_instance, device_to_connect, workflow_to_run
 
 
-def managed_mode(adb_instance: adb.RoboDroidAdb, config_file: str):
-    logger.info("Feature in development!")
-    logger.debug(adb_instance)
-    logger.debug(config_file)
-    raise typer.Exit(1)
+def managed_mode(config_file: str):
+    managed_config_data = helper.load_managed_config(config_file)
+    adb_instance = adb.RoboDroidAdb(
+        managed_config_data["device"]["host"], managed_config_data["device"]["adb_port"]
+    )
+    device_to_connect = managed_config_data["device"]["device_name"]
+    workflow_to_run = managed_config_data["workflow"]
+    return adb_instance, device_to_connect, workflow_to_run
 
 
 @app.command()
@@ -74,21 +83,18 @@ def run(
     # Just printing out an hello msg during development
     logger.log("Hello Robots!")
 
-    # Create adb instance
-    adb_instance = adb.RoboDroidAdb()
-
     # Interactive mode
     if mode == RunMode.INTERACTIVE.value:
-        device_to_connect, workflow_to_run = interactive_mode(adb_instance)
+        adb_instance, device_to_connect, workflow_to_run = interactive_mode()
     # Managed mode
     elif mode == RunMode.MANAGED.value:
-        managed_mode(adb_instance, config_file)
+        adb_instance, device_to_connect, workflow_to_run = managed_mode(config_file)
 
     # Connect to device
     adb_instance.connect(device_to_connect)
 
     # Get workflow data
-    workflow_data = helper.get_workflow_data(workflow_to_run)
+    workflow_data = helper.load_workflow_data(workflow_to_run)
 
     # Create the WorkflowManager
     wf_manager = manager.RoboDroidWorkflowManager(workflow_data, adb_instance)

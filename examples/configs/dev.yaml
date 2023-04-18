@@ -1,3 +1,4 @@
+id: dev-managed-config
 device:
   host: localhost
   adb_port: 5037
