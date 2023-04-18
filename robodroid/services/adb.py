@@ -150,4 +150,5 @@ class RoboDroidAdb:
 
     @validate_connection(None)
     def forward_frida_port(self) -> None:
-        self.device.forward(27042, 27042)  # Default frida port
+        # Default frida port
+        self.device.forward("tcp:27042", "tcp:27042")

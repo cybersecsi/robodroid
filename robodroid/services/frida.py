@@ -26,8 +26,8 @@ class RoboDroidFrida:
 
     def __init__(self, robodroidAdb: adb.RoboDroidAdb):
         self.adb = robodroidAdb
-        frida.get_device_manager().add_remote_device(f"{robodroidAdb.host}:{robodroidAdb.port}")
-        self.device = frida.get_remote_device()
+        frida.get_device_manager().add_remote_device(robodroidAdb.host)  # TODO: Check port usage
+        self.device = frida.get_device_matching(lambda d: d.name == robodroidAdb.host)
         self.queue: queue.Queue = queue.Queue()
 
     def get_download_fname(self, arch: str) -> str:

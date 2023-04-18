@@ -5,7 +5,7 @@ COPY . /usr/src/app/
 RUN apt update && apt install -y build-essential \
     && pip install poetry \
     && poetry install \
-    && poetry build \
+    && poetry build -f wheel \
     && rm -rf /var/lib/apt/lists/*
 
 # Final stage
