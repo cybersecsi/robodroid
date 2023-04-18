@@ -145,15 +145,15 @@ def create_folder_if_missing(path: str) -> None:
         os.makedirs(path)
 
 
-def delete_folder_content(path: str) -> None:
+def delete_folder(path: str) -> None:
     """
-    Delete every file in a folder
+    Delete a folder
 
     Parameters:
-        path (str): the directory to clean
+        path (str): the directory to remove
     """
     if os.path.isdir(path):
-        logger.info(f"Deleting content in '{path}'")
+        logger.info(f"Deleting folder '{path}'")
         shutil.rmtree(path)
     else:
         logger.error(f"'{path}' is missing or is not a dir")
