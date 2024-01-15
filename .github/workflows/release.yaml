@@ -1,15 +1,25 @@
-name: GitHub Release
+name: Release
+
+permissions:
+  contents: write
+
 on:
   push:
     tags:
       - "v*.*.*"
 
 jobs:
-  build:
+  release:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+
+      - run: npx changelogithub@0.12
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
