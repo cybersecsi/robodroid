@@ -116,7 +116,7 @@ This will display the help for the tool:
               &&&&&&&&&&&
                &&&& &&&&
                &&&& &&&&
-            RoboDroid v0.0.2
+            RoboDroid v0.0.3
 
  Usage: robodroid [OPTIONS] COMMAND [ARGS]...
 
@@ -155,7 +155,7 @@ You can run ``robodroid`` in two different modes:
               &&&&&&&&&&&
                &&&& &&&&
                &&&& &&&&
-            RoboDroid v0.0.2
+            RoboDroid v0.0.3
 
  Usage: robodroid run [OPTIONS]
 
